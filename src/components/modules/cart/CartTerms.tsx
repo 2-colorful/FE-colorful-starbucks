@@ -17,13 +17,13 @@ export default function CartTerms() {
     },
   ];
   return (
-    <ul className='bg-gray-200 mx-6 p-4 mb-20 text-text-900 text-caption3 space-y-1.5'>
+    <ul className='bg-gray-200 mx-6 p-4 mb-10 text-text-900 text-caption3 space-y-1.5'>
       {terms.map(({ id, text }) => (
         <li
           key={id}
           className={cn(
             'relative pl-1.5',
-            'before:block before:rounded-full before:absolute  before:left-0 before:w-0.5 before:h-0.5 before:bg-text-900 before:top-[5px]',
+            'before:block before:rounded-full before:absolute before:left-0 before:w-0.5 before:h-0.5 before:bg-text-900 before:top-[5px]',
           )}
         >
           {text}
