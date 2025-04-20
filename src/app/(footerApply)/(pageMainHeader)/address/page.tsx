@@ -35,13 +35,7 @@ export default async function AddressPage() {
           )}
           asChild
         >
-          <Link
-            href={
-              deliveryAddressDatas.length
-                ? '/address/create?isDefaultAddress=true'
-                : '/address/create'
-            }
-          >
+          <Link href={'/address/create'}>
             <IconPlus width={12} height={12} /> 새 배송지 추가
           </Link>
         </Button>
