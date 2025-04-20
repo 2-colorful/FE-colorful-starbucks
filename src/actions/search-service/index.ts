@@ -1,7 +1,13 @@
 'use server';
 
 import { SearchQueryRequestDataType } from '@/types/search/requestDataTypes';
+import { instance } from '../instance';
+import {
+  AutoCompleteItem,
+  RecentSearchType,
+} from '@/types/search/recentSearchTypes';
 
+//수정예정
 export const getSearchResults = async (data: SearchQueryRequestDataType) => {
   const queryData = Object.entries(data);
   const searchParams = new URLSearchParams(queryData).toString();
@@ -21,53 +27,66 @@ export const getSearchResults = async (data: SearchQueryRequestDataType) => {
   }
 };
 
-export const getRecentSearchHistory = async () => {
+export const getRecentSearchHistory = async (): Promise<RecentSearchType[]> => {
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'GET',
+    const result = await instance.get<{
+      recentlySearchKewords: RecentSearchType[];
+    }>(`/users/recently-search`, {
+      requireAuth: true,
     });
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
-
-    return await res.json();
+    return result.data.recentlySearchKewords;
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteRecentSearchHistory = async (id: number[]) => {
-  const recentSearchHistoryId = id.map((item) => ({ id: item }));
+export async function clearAllRecentSearchHistory() {
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'DELETE',
-      body: JSON.stringify({ recentSearchHistoryId }),
+    await instance.delete(`/users/recently-search`, {
+      requireAuth: true,
     });
+  } catch (error) {
+    throw error;
+  }
+}
 
-    if (!res.ok) {
-      throw new Error('Failed to delete data');
-    }
-
-    return await res.json();
+export async function removeRecentSearchHistory(keyword: string) {
+  try {
+    await instance.delete(`/users/recently-search/${keyword}`, {
+      requireAuth: true,
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+export const addRecentSearchHistory = async (keyword: string) => {
+  try {
+    await instance.post(`/users/recently-search?keyword=${keyword}`, {
+      requireAuth: true,
+    });
+    return { success: true };
   } catch (error) {
     throw error;
   }
 };
 
-export const addRecentSearchHistory = async (query: string) => {
+export const getAutoCompleteResult = async (
+  keyword: string,
+): Promise<string[]> => {
+  if (!keyword.trim()) return [];
+
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'POST',
-      body: JSON.stringify({ query }),
-    });
+    const response = await instance.get<{ autoSearchList: AutoCompleteItem[] }>(
+      `/es/auto-complete?keyword=${keyword}`,
+      {
+        requireAuth: false,
+      },
+    );
 
-    if (!res.ok) {
-      throw new Error('Failed to add data');
-    }
-
-    return await res.json();
+    return response.data.autoSearchList.map((item) => item.productName);
   } catch (error) {
-    throw error;
+    console.error('Auto-complete API error:', error);
+    return [];
   }
 };
