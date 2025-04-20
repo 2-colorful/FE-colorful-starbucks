@@ -32,7 +32,7 @@ function Button({ children, className = '', ...props }: ButtonProps) {
         '!text-button2 cursor-pointer',
         'px-2 py-3.5 w-full',
         'border-r border-stroke-100',
-        'bg-white hover:bg-gray-200 focus:bg-gray-200',
+        'bg-white hover:bg-gray-200 active:bg-gray-200',
         className,
       )}
       {...props}

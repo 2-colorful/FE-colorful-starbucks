@@ -1,7 +1,7 @@
 import { Body, Tag } from '@/components/ui/common';
-import { DeliveryDataType } from '@/types/responseDataTypes';
+import { AddressDataType } from '@/types/responseDataTypes';
 
-export default function DeliveryItem({ data }: { data: DeliveryDataType }) {
+export default function DeliveryItem({ data }: { data: AddressDataType }) {
   return (
     <div className='space-y-2 grow w-[calc(100%-90px)]'>
       <Body className='flex items-center gap-1 text-body2'>
@@ -13,8 +13,8 @@ export default function DeliveryItem({ data }: { data: DeliveryDataType }) {
       </Body>
       <div className='space-y-0.5 text-body3'>
         <p>{`(${data.zoneCode})`}</p>
-        <p>{data.mainAddress}</p>
-        <p>{data.subAddress}</p>
+        <p>{data.address}</p>
+        <p>{data.detailAddress}</p>
       </div>
       <p className='text-body4 text-text-500'>{data.phoneNumber}</p>
     </div>

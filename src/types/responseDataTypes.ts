@@ -62,3 +62,18 @@ export interface ProductOptionDataType {
   size: SizeOptionType[];
   color: ColorOptionType[];
 }
+
+export interface AddressDataType {
+  memberAddressUuid: string;
+  addressNickname: string;
+  receiverName: string;
+  address: string;
+  zoneCode: string;
+  isDefaultAddress: boolean;
+  detailAddress: string;
+  phoneNumber: string;
+}
+
+export interface AddressListDataType {
+  deliveryAddresses: AddressDataType[];
+}
