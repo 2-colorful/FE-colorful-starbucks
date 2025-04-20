@@ -44,6 +44,14 @@ export interface ProductDetailDataType {
   productThumbnailUrl: string;
 }
 
+export interface CartDetailType {
+  carvingContent: string | null;
+  checked: boolean;
+  productCode: number;
+  productDetailCode: number;
+  quantity: number;
+}
+
 export interface ProductOptionsType {
   options: ProductOptionDataType;
 }
@@ -76,4 +84,31 @@ export interface AddressDataType {
 
 export interface AddressListDataType {
   deliveryAddresses: AddressDataType[];
+}
+
+export interface PreOrderDataType {
+  orderCode: number;
+  totalAmount: number;
+  memberAddressUuid: string;
+  receiverName: string;
+}
+
+export interface CouponListDataType {
+  content: {
+    couponUuid: string;
+  }[];
+  hasNext: boolean;
+  nextCursor: number;
+}
+
+export interface CouponDataType {
+  couponName: string;
+  couponDescription: string;
+  discountType: 'FIXED_AMOUNT';
+  discountValue: number;
+  couponImageUrl: string;
+  maxDiscountAmount: number;
+  minOrderAmount: number;
+  startAt: string;
+  expiredAt: string;
 }
