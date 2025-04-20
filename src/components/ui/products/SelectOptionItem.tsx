@@ -1,11 +1,15 @@
 import React from 'react';
+import { XIcon } from 'lucide-react';
 
 import QuantityControl from './QuantityControl';
 import { SelectedOption } from '@/types/products/productPurchaseTypes';
-import DeleteIcon from '@/assets/icons/common/delete.svg';
+
+interface ExtendedSelectedOption extends SelectedOption {
+  displayText: string;
+}
 
 interface SelectedOptionItemProps {
-  option: SelectedOption;
+  option: ExtendedSelectedOption;
   onRemove: (id: string) => void;
   onQuantityChange: (id: string, quantity: number) => void;
 }
@@ -15,34 +19,30 @@ export default function SelectedOptionItem({
   onRemove,
   onQuantityChange,
 }: SelectedOptionItemProps) {
-  const { id, options, quantity } = option;
-
-  const handleIncrease = () => onQuantityChange(id, quantity + 1);
-  const handleDecrease = () => {
-    if (quantity > 1) {
-      onQuantityChange(id, quantity - 1);
-    }
-  };
-
-  // 옵션 값들을 텍스트로 변환 (예: "색상: 블랙, 사이즈: M")
-  const optionsText = Object.entries(options)
-    .map(([key, value]) => `${key}: ${value}`)
-    .join(', ');
-
   return (
-    <div className='p-3 flex flex-col gap-2'>
-      <div className='flex justify-between items-center'>
-        <span>{optionsText}</span>
-        <DeleteIcon onClick={() => onRemove(id)} className='mr-1' />
+    <div className='p-3 flex items-start justify-between gap-2'>
+      <div className='flex-1'>
+        <p className='text-sm'>{option.displayText}</p>
       </div>
-      <div className='flex justify-between items-center'>
-        <span className='text-gray-500'>수량</span>
+      <div className='flex items-center gap-2'>
         <QuantityControl
-          quantity={quantity}
-          onIncrease={handleIncrease}
-          onDecrease={handleDecrease}
-          size='small'
+          quantity={option.quantity}
+          onIncrease={() => onQuantityChange(option.id, option.quantity + 1)}
+          onDecrease={() => {
+            if (option.quantity > 1) {
+              onQuantityChange(option.id, option.quantity - 1);
+            }
+          }}
+          size='sm'
         />
+        <button
+          type='button'
+          onClick={() => onRemove(option.id)}
+          className='p-1'
+          aria-label='옵션 삭제'
+        >
+          <XIcon className='w-4 h-4 text-gray-400' />
+        </button>
       </div>
     </div>
   );

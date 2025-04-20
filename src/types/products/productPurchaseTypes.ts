@@ -1,40 +1,54 @@
-// types/products/productPurchaseTypes.ts
-export interface ProductOptionType {
-  id: string;
-  name: string;
-  values: string[];
-}
-
-// 선택된 옵션 값 (예: { "색상": "블랙", "사이즈": "M" })
 export interface SelectedOptionValue {
-  [key: string]: string;
+  [key: string]:
+    | {
+        id: number;
+        name: string;
+      }
+    | undefined;
 }
 
-// 선택된 옵션 항목
 export interface SelectedOption {
   id: string;
   options: SelectedOptionValue;
   quantity: number;
 }
 
-export interface ProductDetail {
-  id: number;
+export interface SizeOptionType {
+  sizeId: number;
+  sizeName: string;
+}
+
+export interface ColorOptionType {
+  colorId: number;
+  colorName: string;
+}
+
+export interface ProductOptionDataType {
+  size?: SizeOptionType[];
+  color?: ColorOptionType[];
+}
+
+export interface ProductDetailDataType {
+  productDetailCode: number;
+  productCode: number;
+  sizeId: number | null;
+  colorId: number | null;
+  sizeName: string | null;
+  colorName: string | null;
   price: number;
-  options: ProductOptionType[];
-  // 기타 상품 정보...
+  inventoryQuantity: number;
+  discountPrice: number;
+  productThumbnailUrl: string;
 }
 
-export interface QuantityControlProps {
-  quantity: number;
-  onIncrease: () => void;
-  onDecrease: () => void;
-  size?: 'default' | 'small';
+export interface InventoryResponseType {
+  productDetailCode: number;
+  inventoryQuantity: number;
 }
 
-export interface OptionSelectorProps {
-  label: string;
-  value: string;
-  options: string[];
-  placeholder: string;
-  onValueChange: (value: string) => void;
+export interface ApiResponse<T> {
+  code: number;
+  status: string;
+  message: string;
+  data: T;
 }

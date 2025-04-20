@@ -1,9 +1,33 @@
 import React from 'react';
 
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/common/Select';
-import { OptionSelectorProps } from '@/types/products/productPurchaseTypes';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/common/Select';
 
-export default function OptionSelector({ label, value, options, placeholder, onValueChange }: OptionSelectorProps) {
+interface OptionItem {
+  value: string;
+  label: string;
+}
+
+interface OptionSelectorProps {
+  label: string;
+  value: string;
+  options: OptionItem[];
+  placeholder: string;
+  onValueChange: (value: string) => void;
+}
+
+export default function OptionSelector({
+  label,
+  value,
+  options,
+  placeholder,
+  onValueChange,
+}: OptionSelectorProps) {
   return (
     <div>
       <label className='block text-sm font-medium mb-2'>{label}</label>
@@ -12,9 +36,9 @@ export default function OptionSelector({ label, value, options, placeholder, onV
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
-          {options.map((option: string) => (
-            <SelectItem key={option} value={option}>
-              {option}
+          {options.map((option) => (
+            <SelectItem key={option.value} value={option.value}>
+              {option.label}
             </SelectItem>
           ))}
         </SelectContent>

@@ -6,12 +6,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../Select';
-import { Body } from '../Typography';
+
+interface SizeOptionWithInventory extends SizeOptionType {
+  inventoryQuantity?: number;
+  disabled?: boolean;
+}
 
 type SizeOptionSelectProps = {
   selectedOption: number | null;
   setSelectedOption: (sizeId: number) => void;
-  options: SizeOptionType[];
+  options: SizeOptionWithInventory[];
 };
 
 export default function SizeOptionSelect({
@@ -19,31 +23,51 @@ export default function SizeOptionSelect({
   setSelectedOption,
   options,
 }: SizeOptionSelectProps) {
-  const initSelectedOption = options.find(
-    (item) => item.sizeId === selectedOption,
-  );
-
-  if (!initSelectedOption || options.length === 0) {
+  if (options.length === 0) {
     return null;
   }
 
+  const selectedOptionItem =
+    selectedOption !== null
+      ? options.find((item) => item.sizeId === selectedOption)
+      : null;
+
   return (
     <>
-      <Body className='pb-4'>색상</Body>
       <Select
+        value={selectedOption !== null ? selectedOption.toString() : undefined}
         onValueChange={(value: string) => setSelectedOption(Number(value))}
       >
         <SelectTrigger className='w-full'>
           <SelectValue
             className='w-full'
-            defaultValue={initSelectedOption?.sizeId}
-            placeholder={initSelectedOption?.sizeName}
+            placeholder={selectedOptionItem?.sizeName || '사이즈를 선택하세요'}
           />
         </SelectTrigger>
         <SelectContent>
-          {options.map(({ sizeId, sizeName }) => (
-            <SelectItem key={sizeId} value={sizeId.toString()}>
-              {sizeName}
+          {options.map(({ sizeId, sizeName, inventoryQuantity, disabled }) => (
+            <SelectItem
+              key={sizeId}
+              value={sizeId.toString()}
+              disabled={disabled}
+              className='flex justify-between items-center'
+            >
+              <span>{sizeName}</span>
+              {inventoryQuantity !== undefined && (
+                <span
+                  className={`text-sm ml-2 ${
+                    inventoryQuantity <= 10
+                      ? 'text-red-500'
+                      : inventoryQuantity <= 50
+                        ? 'text-orange-500'
+                        : 'text-green-500'
+                  }`}
+                >
+                  {inventoryQuantity === 0
+                    ? '품절'
+                    : `${inventoryQuantity}개 남음`}
+                </span>
+              )}
             </SelectItem>
           ))}
         </SelectContent>

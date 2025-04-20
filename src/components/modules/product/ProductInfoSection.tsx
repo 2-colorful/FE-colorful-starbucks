@@ -1,41 +1,26 @@
 'use client';
-import Image from 'next/image';
+import dynamic from 'next/dynamic';
 
 import { ProductTypes } from '@/types/products/productTypes';
-import { ProductTagsType } from '@/types/products/productRequestTypes';
 import ProductInfo from '@/components/ui/products/ProductInfo';
 
 interface ProductInfoSectionProps {
   product: ProductTypes;
-  tags: ProductTagsType;
 }
 
 export default function ProductInfoSection({
   product,
-  tags,
 }: ProductInfoSectionProps) {
+  const ProductImageHtml = dynamic(() => import('./ProductImageHtml'), {
+    ssr: false,
+  });
   return (
     <section>
       <div className='w-full z-20 bg-white pt-4'>
-        <ProductInfo
-          {...product}
-          tags={{
-            isBest: tags.isBest,
-            isNew: tags.isNew,
-            isMarkable: tags.isMarkable,
-          }}
-        />
+        <ProductInfo {...product} />
       </div>
-
       <div className='w-full mt-4'>
-        <Image
-          src={product.productImageUrl}
-          alt={product.productName}
-          unoptimized={true}
-          width={370}
-          height={1500}
-          className='w-full h-auto'
-        />
+        <ProductImageHtml html={product.productImageUrl} />
       </div>
     </section>
   );

@@ -1,11 +1,7 @@
 'use server';
 
 import type { SearchParamsType } from '@/data/productDummy/productSearchTypes';
-import type {
-  FilterDataType,
-  ProductCategoryTopType,
-} from '@/types/products/productCategoryType';
-import type { ProductOptionType } from '@/types/products/productPurchaseTypes';
+import type { ProductCategoryTopType } from '@/types/products/productCategoryType';
 import type { ProductTagsType } from '@/types/products/productRequestTypes';
 import type {
   DailyRecentlyViewedProductsType,
@@ -152,51 +148,6 @@ export const getProductTags = async (
   }
 };
 
-export const getProductOptions = async (
-  productCode: number,
-): Promise<ProductOptionType[]> => {
-  try {
-    const response = await fetch(
-      `http://localhost:8080/api/v1/products/${productCode}/options`,
-    );
-    if (!response.ok) {
-      throw new Error(
-        `상품 옵션 정보를 가져오는데 실패했습니다: ${response.status}`,
-      );
-    }
-
-    const result = await response.json();
-    const optionsData = result.data.options;
-
-    const formattedOptions: ProductOptionType[] = [];
-
-    if (optionsData.size) {
-      formattedOptions.push({
-        id: 'size',
-        name: '사이즈',
-        values: optionsData.size.map(
-          (item: { sizeName: string }) => item.sizeName,
-        ),
-      });
-    }
-
-    if (optionsData.color) {
-      formattedOptions.push({
-        id: 'color',
-        name: '색상',
-        values: optionsData.color.map(
-          (item: { colorName: string }) => item.colorName,
-        ),
-      });
-    }
-
-    return formattedOptions;
-  } catch (error) {
-    console.error('상품 옵션 정보 조회 중 오류 발생:', error);
-    throw error;
-  }
-};
-
 export async function getProductCategories(
   topCategoryId: number,
 ): Promise<ProductCategoryTopType[]> {
@@ -207,31 +158,6 @@ export async function getProductCategories(
   const data = res.data;
 
   return data;
-}
-
-// 카테고리 ID에 따른 필터 옵션 조회
-export async function getProductFilters(
-  topCategoryId: number,
-): Promise<FilterDataType> {
-  try {
-    const response = await fetch(
-      `http://localhost:8080/api/v1/categories/${topCategoryId}/filters`,
-    );
-    if (!response.ok) {
-      throw new Error(
-        `필터 옵션 정보를 가져오는데 실패했습니다: ${response.status}`,
-      );
-    }
-
-    const result = await response.json();
-    return {
-      price: result.data.price || [],
-      seasons: result.data.seasons || [],
-    };
-  } catch (error) {
-    console.error('필터 옵션 정보 조회 중 오류 발생:', error);
-    throw error;
-  }
 }
 
 export interface ProductDetail {
@@ -327,6 +253,7 @@ export async function getProduct(productCode: number): Promise<ProductTypes> {
     const response = await instance.get<ProductTypes>(
       `/products/${productCode}`,
       {
+        requireAuth: false,
         cache: 'force-cache',
         tags: ['product', `product-${productCode}`],
         revalidate: 60 * 60 * 24,
@@ -372,9 +299,7 @@ export const getProudctDetailData = async (
     const res = await instance.get<ProductDetailDataType>(
       `/product-details/${productCode}`,
       {
-        headers: {
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-        },
+        requireAuth: false,
       },
     );
 
@@ -391,9 +316,7 @@ export const getProductOptionData = async (
     const res = await instance.get<ProductOptionsType>(
       `/products/${productCode}/options`,
       {
-        headers: {
-          Authorization: `Bearer ${process.env.ACCESS_TOKEN}`,
-        },
+        requireAuth: false,
       },
     );
 
@@ -416,7 +339,7 @@ export const getProductDetailWithOptions = async (
     const res = await instance.get<{
       productDetailCode: number;
       inventoryQuantity: number;
-    }>(`/product-details?${params.toString()}`);
+    }>(`/product-details?${params.toString()}`, { requireAuth: false });
     return res.data;
   } catch (error) {
     throw error;
