@@ -19,25 +19,26 @@ export default function ColorOptionSelect({
   setSelectedOption,
   options,
 }: ColorOptionSelectProps) {
-  const initSelectedOption = options.find(
-    (item) => item.colorId === selectedOption,
-  );
-
-  if (!initSelectedOption || options.length === 0) {
+  if (options.length === 0) {
     return null;
   }
 
+  const selectedOptionItem =
+    selectedOption !== null
+      ? options.find((item) => item.colorId === selectedOption)
+      : null;
+
   return (
     <>
-      <Body className='pb-4'>색상</Body>
+      <Body className='pb-2 pt-2'>색상</Body>
       <Select
+        value={selectedOption !== null ? selectedOption.toString() : undefined}
         onValueChange={(value: string) => setSelectedOption(Number(value))}
       >
         <SelectTrigger className='w-full'>
           <SelectValue
             className='w-full'
-            defaultValue={initSelectedOption?.colorId}
-            placeholder={initSelectedOption?.colorName}
+            placeholder={selectedOptionItem?.colorName || '색상을 선택하세요'}
           />
         </SelectTrigger>
         <SelectContent>

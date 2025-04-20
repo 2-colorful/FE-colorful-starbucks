@@ -1,7 +1,8 @@
+import { Caveat } from 'next/font/google';
+
 import { ProductTypes } from '@/types/products/productTypes';
 import ProductAccordion from './ProductAccordion';
 import ShareIcon from '@/assets/icons/common/share.svg';
-import { Caveat } from 'next/font/google';
 import ProductTags from '@/components/modules/product/ProductTags';
 
 const caveat = Caveat({
@@ -18,7 +19,7 @@ interface ProductInfoProps extends ProductTypes {
   };
 }
 
-export default function ProductInfo({ tags, ...product }: ProductInfoProps) {
+export default function ProductInfo({ ...product }: ProductInfoProps) {
   const handleshareProduct = (productCode: number) => {
     console.log('shared' + productCode);
   };
@@ -28,15 +29,7 @@ export default function ProductInfo({ tags, ...product }: ProductInfoProps) {
       <div className='flex justify-between items-center j mb-2'>
         <h2 className='text-title1 font-bold'>
           {product.productName}
-          {/* 태그를 직접 텍스트로 표시 */}
-          {tags && (
-            <ProductTags
-              isBest={tags.isBest}
-              isNew={tags.isNew}
-              isMarkable={tags.isMarkable}
-              caveatFont={caveat}
-            />
-          )}
+          <ProductTags isMarkable={product.markable} caveatFont={caveat} />
         </h2>
         <button
           className='cursor-pointer'

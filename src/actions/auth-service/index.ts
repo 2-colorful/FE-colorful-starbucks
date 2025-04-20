@@ -14,6 +14,7 @@ export const signInRequest = async (credentials: {
   password: string;
 }): Promise<signInDataType> => {
   const response = await instance.post<signInDataType>(`/auth/sign-in`, {
+    requireAuth: false,
     body: JSON.stringify({
       email: credentials.email,
       password: credentials.password,
@@ -36,6 +37,7 @@ export async function checkEmailDuplication(email: string) {
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     const response = await instance.post('/auth/email/exists', {
+      requireAuth: false,
       body: JSON.stringify({
         email,
       }),
@@ -59,6 +61,7 @@ export async function sendVerificationCode(email: string) {
     emailSchema.parse(email);
 
     await instance.post('/auth/email/send-code', {
+      requireAuth: false,
       body: JSON.stringify({
         email: email,
       }),
@@ -84,6 +87,7 @@ export async function verifyCode(
     const response = await instance.post<ApiResponse<Record<string, never>>>(
       '/auth/email/verify-code',
       {
+        requireAuth: false,
         body: JSON.stringify({
           email,
           code,
@@ -112,6 +116,7 @@ export async function signUp(data: SignUpRequestData) {
   try {
     const response = await instance.post<ApiResponse<string>>('/auth/sign-up', {
       body: JSON.stringify(data),
+      requireAuth: false,
     });
 
     return response.data;

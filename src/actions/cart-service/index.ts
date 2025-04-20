@@ -93,3 +93,33 @@ export const deleteAllCart = async () => {
     throw error;
   }
 };
+
+export const addToCart = async (productData: {
+  productDetailCode: number;
+  productCode: number;
+  quantity: number;
+  carvingContent?: string;
+}) => {
+  try {
+    const requestData = {
+      products: [
+        {
+          productDetailCode: productData.productDetailCode,
+          productCode: productData.productCode,
+          quantity: productData.quantity,
+          carvingContent: productData.carvingContent || null,
+        },
+      ],
+    };
+
+    await instance.post('/carts', {
+      requireAuth: true,
+      body: JSON.stringify(requestData),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('장바구니 추가 중 오류 발생:', error);
+    throw error;
+  }
+};
