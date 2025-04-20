@@ -1,34 +1,39 @@
 'use client';
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from 'react';
+import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 import {
-  ProductOptionType,
   SelectedOption,
   SelectedOptionValue,
 } from '@/types/products/productPurchaseTypes';
 import { useCallback } from 'react';
+import { ProductOptionDataType } from '@/types/responseDataTypes';
 
 interface ProductOptionsContextType {
   currentSelections: SelectedOptionValue;
   quantity: number;
   selectedOptions: SelectedOption[];
   productPrice: number;
+  productOptions: ProductOptionDataType;
 
-  setOptionValue: (optionName: string, value: string) => void;
+  setOptionValue: (
+    optionType: string,
+    optionId: number,
+    optionName: string,
+  ) => void;
   setQuantity: (quantity: number) => void;
   removeOption: (optionId: string) => void;
   updateOptionQuantity: (optionId: string, newQuantity: number) => void;
   increaseQuantity: () => void;
   decreaseQuantity: () => void;
   resetSelections: () => void;
+  addOptionToSelection: () => void;
 
   isOptionComplete: () => boolean;
+  hasOptions: boolean;
+  checkInventory: (
+    sizeId?: number,
+    colorId?: number,
+  ) => Promise<{ productDetailCode: number; inventoryQuantity: number }>;
 }
 
 const ProductOptionsContext = createContext<
@@ -39,17 +44,15 @@ interface ProductOptionsProviderProps {
   children: ReactNode;
   productId: number;
   productPrice: number;
-  productOptions: ProductOptionType[];
+  productOptions: ProductOptionDataType;
 }
 
 export function ProductOptionsProvider({
   children,
   productId,
-  productOptions,
   productPrice,
+  productOptions,
 }: ProductOptionsProviderProps) {
-  console.log(productId); // 나중에 지울 예정
-
   // 현재 선택 중인 옵션 값들
   const [currentSelections, setCurrentSelections] =
     useState<SelectedOptionValue>({});
@@ -58,16 +61,41 @@ export function ProductOptionsProvider({
   // 확정된 옵션 목록
   const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
 
+  // 옵션이 있는지 확인 (사이즈나 컬러 옵션이 하나라도 있으면 true)
+  const hasOptions =
+    productOptions?.size?.length > 0 ||
+    productOptions?.color?.length > 0 ||
+    false;
+
   // 모든 필수 옵션이 선택되었는지 확인
   const isOptionComplete = useCallback(() => {
-    return productOptions.every(
-      (option) => currentSelections[option.name] !== undefined,
-    );
-  }, [currentSelections, productOptions]);
+    if (!hasOptions) return true;
 
-  // 옵션 값 변경
-  const setOptionValue = (optionName: string, value: string) => {
-    const newSelections = { ...currentSelections, [optionName]: value };
+    // 사이즈 옵션이 있으면 선택되었는지 확인
+    const isSizeComplete =
+      productOptions?.size?.length > 0
+        ? currentSelections['size'] !== undefined
+        : true;
+
+    // 컬러 옵션이 있으면 선택되었는지 확인
+    const isColorComplete =
+      productOptions?.color?.length > 0
+        ? currentSelections['color'] !== undefined
+        : true;
+
+    return isSizeComplete && isColorComplete;
+  }, [currentSelections, productOptions, hasOptions]);
+
+  // 옵션 값 변경 (옵션 타입, 옵션 ID, 옵션 이름)
+  const setOptionValue = (
+    optionType: string,
+    optionId: number,
+    optionName: string,
+  ) => {
+    const newSelections = {
+      ...currentSelections,
+      [optionType]: { id: optionId, name: optionName },
+    };
 
     // 이미 동일한 옵션 조합이 있는지 확인
     const existingOption = findExistingOption(newSelections);
@@ -82,57 +110,59 @@ export function ProductOptionsProvider({
 
   // 옵션 값에 해당하는 기존 옵션 찾기
   const findExistingOption = (optionValues: SelectedOptionValue) => {
-    // 모든 옵션이 채워졌는지 확인
-    const allOptionsSelected = productOptions.every(
-      (option) => optionValues[option.name] !== undefined,
-    );
-
-    if (!allOptionsSelected) return null;
+    if (!isOptionComplete()) return null;
 
     // 동일한 옵션 조합 찾기
     return selectedOptions.find((option) => {
-      return productOptions.every(
-        (productOption) =>
-          option.options[productOption.name] ===
-          optionValues[productOption.name],
-      );
+      // 사이즈 옵션 비교
+      const isSizeMatch =
+        !productOptions?.size?.length ||
+        JSON.stringify(option.options['size']) ===
+          JSON.stringify(optionValues['size']);
+
+      // 컬러 옵션 비교
+      const isColorMatch =
+        !productOptions?.color?.length ||
+        JSON.stringify(option.options['color']) ===
+          JSON.stringify(optionValues['color']);
+
+      return isSizeMatch && isColorMatch;
     });
   };
 
   // 현재 선택된 옵션으로 고유 ID 생성
   const generateOptionId = (optionValues: SelectedOptionValue) => {
-    return Object.entries(optionValues)
-      .sort(([keyA], [keyB]) => keyA.localeCompare(keyB))
-      .map(([key, value]) => `${key}-${value}`)
-      .join('_');
+    const sizeId = optionValues['size']?.id || 'none';
+    const colorId = optionValues['color']?.id || 'none';
+    return `size-${sizeId}_color-${colorId}`;
   };
 
-  // 모든 옵션 선택 시 자동으로 목록에 추가
-  useEffect(() => {
-    if (isOptionComplete()) {
-      const optionId = generateOptionId(currentSelections);
-      const existingIndex = selectedOptions.findIndex(
-        (opt) => generateOptionId(opt.options) === optionId,
-      );
+  // 현재 선택한 옵션을 옵션 목록에 추가
+  const addOptionToSelection = useCallback(() => {
+    if (!isOptionComplete()) return;
 
-      if (existingIndex >= 0) {
-        // 이미 있는 옵션이면 수량만 업데이트
-        const updatedOptions = [...selectedOptions];
-        updatedOptions[existingIndex].quantity = quantity;
-        setSelectedOptions(updatedOptions);
-      } else {
-        // 새 옵션 추가
-        const newOption: SelectedOption = {
-          id: optionId,
-          options: { ...currentSelections },
-          quantity,
-        };
-        setSelectedOptions([...selectedOptions, newOption]);
+    const optionId = generateOptionId(currentSelections);
+    const existingIndex = selectedOptions.findIndex(
+      (opt) => generateOptionId(opt.options) === optionId,
+    );
 
-        // 새 옵션이 추가되면 초기화
-        setCurrentSelections({});
-        setQuantity(1);
-      }
+    if (existingIndex >= 0) {
+      // 이미 있는 옵션이면 수량만 업데이트
+      const updatedOptions = [...selectedOptions];
+      updatedOptions[existingIndex].quantity = quantity;
+      setSelectedOptions(updatedOptions);
+    } else {
+      // 새 옵션 추가
+      const newOption: SelectedOption = {
+        id: optionId,
+        options: { ...currentSelections },
+        quantity,
+      };
+      setSelectedOptions((prev) => [...prev, newOption]);
+
+      // 새 옵션이 추가되면 초기화
+      setCurrentSelections({});
+      setQuantity(1);
     }
   }, [currentSelections, quantity, isOptionComplete, selectedOptions]);
 
@@ -172,6 +202,20 @@ export function ProductOptionsProvider({
     setQuantity(1);
   };
 
+  // 재고 확인 API 호출
+  const checkInventory = async (sizeId?: number, colorId?: number) => {
+    try {
+      const response = await fetch(
+        `/api/products/${productId}/inventory?${sizeId ? `sizeId=${sizeId}` : ''}${colorId ? `&colorId=${colorId}` : ''}`,
+      );
+      const data = await response.json();
+      return data.data; // { productDetailCode: number, inventoryQuantity: number }
+    } catch (error) {
+      console.error('재고 확인 중 오류 발생:', error);
+      return { productDetailCode: 0, inventoryQuantity: 0 };
+    }
+  };
+
   return (
     <ProductOptionsContext.Provider
       value={{
@@ -179,6 +223,8 @@ export function ProductOptionsProvider({
         quantity,
         selectedOptions,
         productPrice,
+        productOptions,
+        hasOptions,
 
         setOptionValue,
         setQuantity,
@@ -187,7 +233,9 @@ export function ProductOptionsProvider({
         increaseQuantity,
         decreaseQuantity,
         resetSelections,
+        addOptionToSelection,
         isOptionComplete,
+        checkInventory,
       }}
     >
       {children}

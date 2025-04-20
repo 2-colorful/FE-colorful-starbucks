@@ -4,20 +4,15 @@ import SelectedOptionList from './SelectedOptionList';
 import CartIcon from '@/assets/icons/product/cart.svg';
 import { Button } from '@/components/ui/common';
 import { useProductOptions } from '@/context/ProductOptionsContext';
-import {
-  ProductDetail,
-  SelectedOption,
-} from '@/types/products/productPurchaseTypes';
+import { SelectedOption } from '@/types/products/productPurchaseTypes';
 import OptionSelectionForm from './OptionSelectionForm';
 
 interface PurchaseFormProps {
-  product: ProductDetail;
   onAddToCart: (options: SelectedOption[]) => void;
   onPurchase: (options: SelectedOption[]) => void;
 }
 
 export default function PurchaseForm({
-  product,
   onAddToCart,
   onPurchase,
 }: PurchaseFormProps) {
@@ -40,11 +35,10 @@ export default function PurchaseForm({
     <div className='flex flex-col gap-4'>
       <h2 className='text-xl font-bold'>구매 옵션 선택</h2>
 
-      <OptionSelectionForm productOptions={product.options} />
+      <OptionSelectionForm />
 
       <SelectedOptionList />
 
-      {/* 하단 버튼 영역 */}
       <div className='mt-4'>
         <div className='flex items-center gap-3'>
           <div
