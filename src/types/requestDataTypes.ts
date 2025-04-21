@@ -47,9 +47,9 @@ export interface CreateAddressDataType {
 }
 
 export interface PreOrderRequestType {
-  couponUuid: string;
+  couponUuid?: string;
   totalAmount: number;
-  discountAmount: number;
+  discountAmount?: number;
   memberAddressUuid: string;
   receiverName: string;
   memberUuid: string;
