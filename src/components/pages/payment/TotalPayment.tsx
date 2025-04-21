@@ -1,5 +1,6 @@
 import { getProudctDetailData } from '@/actions/product-service';
-import { Body, SubTitle } from '@/components/ui/common';
+import { Body, BottomSheet, Button, SubTitle } from '@/components/ui/common';
+import { priceFormatter } from '@/lib/priceFormatter';
 import { CartDetailType } from '@/types/responseDataTypes';
 
 type TotalPaymentProps = {
@@ -31,25 +32,32 @@ export default async function TotalPayment({
   const totalPrice = orderPrice - totalDiscountPrice;
 
   return (
-    <section className='bg-gray-300 p-6'>
-      <ul className='gap-y-2.5 grid'>
-        <li>
-          <Body className='flex w-full justify-between' level={3}>
-            <span>주문 금액</span>
-            <span>{totalPrice.toLocaleString()}원</span>
-          </Body>
-        </li>
-        <li>
-          <Body className='flex w-full justify-between' level={3}>
-            <span>쿠폰 할인</span>
-            <span>0원</span>
-          </Body>
-        </li>
-      </ul>
-      <SubTitle level={1} className='flex w-full justify-between mt-5'>
-        <span>최종 결제 금액</span>
-        <span>{totalPrice.toLocaleString()}원</span>
-      </SubTitle>
-    </section>
+    <>
+      <section className='bg-gray-300 p-6'>
+        <ul className='gap-y-2.5 grid'>
+          <li>
+            <Body className='flex w-full justify-between' level={3}>
+              <span>주문 금액</span>
+              <span>{totalPrice.toLocaleString()}원</span>
+            </Body>
+          </li>
+          <li>
+            <Body className='flex w-full justify-between' level={3}>
+              <span>쿠폰 할인</span>
+              <span>0원</span>
+            </Body>
+          </li>
+        </ul>
+        <SubTitle level={1} className='flex w-full justify-between mt-5'>
+          <span>최종 결제 금액</span>
+          <span>{totalPrice.toLocaleString()}원</span>
+        </SubTitle>
+      </section>
+      <BottomSheet>
+        <Button type='button' className='w-full'>
+          {priceFormatter(Number(totalPrice))}원 결제하기
+        </Button>
+      </BottomSheet>
+    </>
   );
 }

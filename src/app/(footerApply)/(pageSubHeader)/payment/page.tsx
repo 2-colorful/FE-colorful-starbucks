@@ -1,16 +1,20 @@
-import { BottomSheet, Button, Caption, Heading } from '@/components/ui/common';
+import { Caption, Heading } from '@/components/ui/common';
 import { Accordion } from '@/components/ui/common/accordion';
 import OrderInfo from '@/components/modules/payment/OrderInfo';
 import CouponInfo from '@/components/modules/payment/CouponInfo';
 import TotalPayment from '@/components/pages/payment/TotalPayment';
 import { getCartDetail } from '@/actions/cart-service';
 import OrderDelivery from '@/components/modules/payment/OrderDelivery';
-import { priceFormatter } from '@/lib/priceFormatter';
+import {
+  getDefaultDeliveryAddress,
+  getDetailDeliveryAddress,
+} from '@/actions/address-service';
+import { getCouponDetail } from '@/actions/coupon-service';
 
 type SearchParamType = {
-  cartId?: string;
-  orderId?: string;
-  totalAmount?: string;
+  cartId: string;
+  memberAddressUuid?: string;
+  couponUuid?: string;
 };
 
 type PaymentPageProps = {
@@ -18,12 +22,11 @@ type PaymentPageProps = {
 };
 
 export default async function PaymentPage({ searchParams }: PaymentPageProps) {
-  const orderSearchParams = await searchParams;
+  const { cartId, memberAddressUuid, couponUuid } = await searchParams;
 
   const cartIds =
-    orderSearchParams.cartId
-      ?.split(',')
-      .map((id) => ({ cartId: Number(id) })) || ([] as { cartId: number }[]);
+    cartId.split(',').map((id) => ({ cartId: Number(id) })) ||
+    ([] as { cartId: number }[]);
 
   const cartDatas = await Promise.all(
     cartIds.map(async ({ cartId }) => {
@@ -33,18 +36,24 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
     }),
   );
 
+  const couponData = await getCouponDetail(couponUuid);
+
+  const addressData = memberAddressUuid
+    ? await getDetailDeliveryAddress(memberAddressUuid)
+    : await getDefaultDeliveryAddress();
+
   return (
     <main>
       <Heading.Wrapper>
         <Heading.Title>결제하기</Heading.Title>
       </Heading.Wrapper>
 
-      <OrderDelivery />
+      <OrderDelivery addressData={addressData} />
 
       <section className='px-6 data-[slot=accordion-item]:border-none'>
         <Accordion type='multiple' defaultValue={['coupon']}>
           <OrderInfo cartDatas={cartDatas} />
-          <CouponInfo />
+          <CouponInfo couponData={couponData} />
         </Accordion>
       </section>
 
@@ -57,12 +66,6 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
           (전자상거래법 8조 2항)
         </Caption>
       </section>
-
-      <BottomSheet>
-        <Button type='button' className='w-full'>
-          {priceFormatter(Number(orderSearchParams?.totalAmount))}원 결제하기
-        </Button>
-      </BottomSheet>
     </main>
   );
 }
