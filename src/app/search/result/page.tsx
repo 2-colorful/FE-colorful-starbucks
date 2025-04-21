@@ -1,6 +1,7 @@
 type SearchResultPageProps = {
   searchParams: Promise<{ query?: string; callbackUrl?: string }>;
 };
+export const dynamic = 'force-dynamic';
 export default async function SearchResultPage({
   searchParams,
 }: SearchResultPageProps) {

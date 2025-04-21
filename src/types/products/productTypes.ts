@@ -21,6 +21,7 @@ export interface ProductListDataType {
 
 export type RecentlyViewedProductItem = {
   productCode: number;
+  productThumbnailUrl?: string;
 };
 
 export type DailyRecentlyViewedProductsType = {
