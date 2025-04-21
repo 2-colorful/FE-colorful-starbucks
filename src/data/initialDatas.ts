@@ -29,12 +29,12 @@ export const pageSubHeaderData: PageSubHeaderDataType[] = [
   },
   {
     id: 3,
-    path: '/delivery/create',
+    path: '/address/create',
     title: '배송지 등록',
   },
   {
     id: 4,
-    path: '/delivery/edit',
+    path: '/address/edit',
     title: '배송지 수정',
   },
   {

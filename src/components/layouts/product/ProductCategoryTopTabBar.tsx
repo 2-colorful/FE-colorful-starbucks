@@ -19,7 +19,9 @@ export default function ProductCategoryTopTabBar({
   const activeTabRef = useRef<HTMLLIElement>(null);
 
   const handleCategoryClick = (category: CategoryTopResponseType) => {
-    router.push(`?topCategoryId=${category.topCategoryId}`, { scroll: false });
+    router.replace(`?topCategoryId=${category.topCategoryId}`, {
+      scroll: false,
+    });
   };
 
   useEffect(() => {

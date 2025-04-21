@@ -21,6 +21,7 @@ export default async function ProductItemCard({
         <Image
           src={product.productThumbnailUrl || '/placeholder.svg'}
           alt={product.productName || '상품 이미지'}
+          unoptimized={true}
           height={64}
           width={64}
           className='w-full h-full object-cover'

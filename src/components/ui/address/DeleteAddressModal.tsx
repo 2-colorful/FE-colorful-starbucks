@@ -1,39 +1,36 @@
 'use client';
-import { useRouter } from 'next/navigation';
 
 import { Body } from '@/components/ui/common';
 import { Modal } from '@/components/ui/common/Modal';
 import { ModalButtons } from '../common/Modal/ModalButtons';
-import { deleteAddress } from '@/actions/delivery-service';
+import { deleteAddress } from '@/actions/address-service';
 import { useModalContext } from '@/context/ModalContext';
 
 interface DeleteAddressModalProps {
-  memberAddressId: string;
+  memberAddressUuid: string;
 }
 
 export default function DeleteAddressModal({
-  memberAddressId,
+  memberAddressUuid,
 }: DeleteAddressModalProps) {
-  const router = useRouter();
   const { closeModal } = useModalContext();
 
   const handleClickReset = () => {
     closeModal();
-    router.back();
   };
 
-  const handleDeleteAddressData = async (memberAddressId: string) => {
+  const handleDeleteAddressData = async (memberAddressUuid: string) => {
     try {
-      await deleteAddress(memberAddressId);
+      await deleteAddress(memberAddressUuid);
+
+      closeModal();
     } catch (error) {
-      console.log('🚀 ~ handleDeleteAddressData ~ error:', error);
-      alert('주소 삭제 실패');
       throw error;
     }
   };
 
   return (
-    <Modal variant='card'>
+    <Modal variant='card' className='overflow-hidden'>
       <Body level={3} className='px-6 pt-10 pb-6 text-text-700'>
         배송지를 삭제하시겠어요?
       </Body>
@@ -46,7 +43,7 @@ export default function DeleteAddressModal({
           취소
         </ModalButtons.Button>
         <ModalButtons.Button
-          onClick={() => handleDeleteAddressData(memberAddressId)}
+          onClick={() => handleDeleteAddressData(memberAddressUuid)}
           className='text-primary-100'
         >
           삭제

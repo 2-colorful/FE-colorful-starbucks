@@ -62,8 +62,6 @@ const fetchInstance = async <T = undefined>(
       nextOptions.revalidate = options.revalidate;
     }
 
-    console.log(headers);
-
     const response = await fetch(`${BASE_URL}${url}`, {
       ...options,
       headers,

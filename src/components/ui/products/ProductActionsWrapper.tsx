@@ -1,18 +1,22 @@
 'use client';
 
-import { ProductOptionType } from '@/types/products/productPurchaseTypes';
-import ProductActions from '@/components/ui/products/ProductActions';
+import ProductActions from './ProductActions';
+import { ProductOptionDataType } from '@/types/responseDataTypes';
 
-interface ProductActionsWrapperProps {
+type ProductActionsWrapperProps = {
   productId: number;
   productPrice: number;
-  productOptions: ProductOptionType[];
-}
+  productOptions: ProductOptionDataType;
+  productName: string;
+  productThumbnailUrl: string;
+};
 
 export default function ProductActionsWrapper({
   productId,
   productPrice,
   productOptions,
+  productName,
+  productThumbnailUrl,
 }: ProductActionsWrapperProps) {
   return (
     <section>
@@ -21,6 +25,8 @@ export default function ProductActionsWrapper({
           productId={productId}
           productPrice={productPrice}
           productOptions={productOptions}
+          productName={productName}
+          productThumbnailUrl={productThumbnailUrl}
         />
       </div>
     </section>

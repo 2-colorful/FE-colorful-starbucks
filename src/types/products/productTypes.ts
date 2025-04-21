@@ -4,7 +4,7 @@ export interface ProductTypes {
   description: string;
   productThumbnailUrl: string;
   productImageUrl: string;
-  markable: string;
+  markable: boolean;
   price: number;
 }
 
@@ -17,10 +17,6 @@ export interface ProductListDataType {
   content: ProductItem[];
   hasNext: boolean;
   nextCursor: string | null;
-}
-
-export interface ProductsWithDetailsDataType extends ProductListDataType {
-  productDetails: ProductTypes[];
 }
 
 export type RecentlyViewedProductItem = {
@@ -41,4 +37,22 @@ export type ProductDetailResponseType = {
   price: number;
   discountPrice: number;
   productDetailThumbnailUrl: string;
+};
+
+export type FilteredProductsDataType = {
+  productCode: number;
+};
+
+export type PaginatedResponseType = {
+  content: FilteredProductsDataType[];
+  hasNext: boolean;
+  nextCursor: number;
+};
+
+export type SimpleProduct = {
+  productName: string;
+  productCode: number;
+  productThumbnailUrl: string;
+  price: number;
+  isNew: boolean;
 };

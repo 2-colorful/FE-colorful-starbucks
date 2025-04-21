@@ -14,18 +14,16 @@ export default function SortProducts() {
 
   const sortOptions = [
     { value: 'createdAt,desc', label: '신상품순' },
-    { value: '', label: '추천순' },
+    { value: 'createdAt,asc', label: '구상품순' },
     { value: 'price,asc', label: '낮은가격순' },
     { value: 'price,desc', label: '높은가격순' },
   ];
 
-  // 현재 정렬 값 가져오기
   const currentSortValue = searchParamsObj.get('sortBy') || '';
 
-  // 현재 정렬 라벨 찾기
   const currentSortLabel =
     sortOptions.find((option) => option.value === currentSortValue)?.label ||
-    '추천순';
+    '신상품순';
 
   const handleSortSelect = (sortValue: string) => {
     const params = new URLSearchParams(searchParamsObj.toString());
@@ -59,7 +57,7 @@ export default function SortProducts() {
   }, []);
 
   return (
-    <div className='relative' ref={dropdownRef}>
+    <div className='relative ' ref={dropdownRef}>
       <button
         className='flex items-center justify-between w-full px-4 py-2 text-sm whitespace-nowrap'
         onClick={() => setIsOpen(!isOpen)}

@@ -1,14 +1,12 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import Tag from '../../ui/main/Tag';
-import {
-  getProductDetailDummy,
-  ProductDetail,
-} from '@/actions/product-service';
+import { getProductSimple } from '@/actions/product-service';
 import FilteredProductItemCardSkelton from './FilteredProductItemCardSkelton';
+import { SimpleProduct } from '@/types/products/productTypes';
 
 interface FilteredProductCardProps {
   productCode: number;
@@ -17,13 +15,14 @@ interface FilteredProductCardProps {
 export default function FilteredProductItemCard({
   productCode,
 }: FilteredProductCardProps) {
-  const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [product, setProduct] = useState<SimpleProduct | null>(null);
   const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchProductDetail = async () => {
       try {
-        const productDetail = await getProductDetailDummy(productCode); //Dummy만 빼면 됨 나중에
+        const productDetail = await getProductSimple(productCode);
         setProduct(productDetail);
       } catch (error) {
         console.error('상품 정보 로딩 실패', error);
@@ -34,6 +33,9 @@ export default function FilteredProductItemCard({
 
     fetchProductDetail();
   }, [productCode]);
+  const ClickToProductDetailPage = async () => {
+    router.push(`/product/${product?.productCode}`);
+  };
 
   if (loading) {
     return <FilteredProductItemCardSkelton />;
@@ -41,29 +43,23 @@ export default function FilteredProductItemCard({
   if (!product) return;
 
   return (
-    <Link
-      href={`/products/${product.productCode}`}
-      scroll={false}
-      className='block w-full'
-    >
-      <div className='w-full'>
-        <div className='relative aspect-square w-full mb-2'>
-          <Image
-            src={product.productThumbnailUrl}
-            alt={product.productName}
-            className='rounded-[4px]'
-            fill
-            sizes='100%'
-          />
-        </div>
-        <Tag
-          isMarkable={product.isMarkable}
-          isNew={product.isNew}
-          isBest={product.isBest}
+    <div className='w-full'>
+      <button
+        onClick={ClickToProductDetailPage}
+        className='relative aspect-square w-full mb-2'
+      >
+        <Image
+          src={product.productThumbnailUrl}
+          alt={product.productName}
+          unoptimized={true}
+          className='rounded-[4px]'
+          fill
+          sizes='100%'
         />
-        <h3 className='text-button2 my-3'>{product.productName}</h3>
-        <p className='text-subtitle2'>{product.price.toLocaleString()}원</p>
-      </div>
-    </Link>
+      </button>
+      <Tag isNew={product.isNew} />
+      <h3 className='text-button2 my-3'>{product.productName}</h3>
+      <p className='text-subtitle2'>{product.price.toLocaleString()}원</p>
+    </div>
   );
 }

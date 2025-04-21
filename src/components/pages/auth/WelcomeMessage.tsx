@@ -7,7 +7,12 @@ import { Body, Title } from '@/components/ui/common';
 export default function WelcomeMessage() {
   return (
     <section className='w-full py-10'>
-      <Image src={img} alt='로고' className='size-[3.875rem] mb-[1.5rem]' />
+      <Image
+        src={img}
+        alt='로고'
+        unoptimized={true}
+        className='size-[3.875rem] mb-[1.5rem]'
+      />
       <Title level={2}>
         안녕하세요.
         <br />

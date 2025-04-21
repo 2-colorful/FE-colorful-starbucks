@@ -1,7 +1,7 @@
 export interface SearchParamsType {
   topCategoryId?: string;
 
-  bottomCategoryIds?: string[];
+  bottomCategoryIds?: string | string[];
 
   minPrice?: string;
   maxPrice?: string;
@@ -10,6 +10,8 @@ export interface SearchParamsType {
 
   cursor?: string;
   size?: string;
+
+  page?: string;
 
   [key: string]: string | string[] | undefined;
 }

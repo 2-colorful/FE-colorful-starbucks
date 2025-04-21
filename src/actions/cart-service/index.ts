@@ -6,7 +6,7 @@ import type {
   UpdateCartCheckedType,
   UpdateCartDataType,
 } from '@/types/requestDataTypes';
-import type { CartDatasType } from '@/types/responseDataTypes';
+import type { CartDatasType, CartDetailType } from '@/types/responseDataTypes';
 import { instance } from '../instance';
 import { CART_TAG } from '@/data/tagDatas';
 
@@ -20,7 +20,19 @@ export const getCartDatas = async (size: number = 10) => {
 
     return res.data;
   } catch (error) {
-    console.log('🚀 ~ getCartDatas ~ error:', error);
+    throw error;
+  }
+};
+
+export const getCartDetail = async (cartId: number) => {
+  try {
+    const res = await instance.get<CartDetailType>(`/carts/${cartId}`, {
+      requireAuth: true,
+      cache: 'force-cache',
+    });
+
+    return res.data;
+  } catch (error) {
     throw error;
   }
 };
@@ -90,6 +102,36 @@ export const deleteAllCart = async () => {
 
     revalidateTag(CART_TAG);
   } catch (error) {
+    throw error;
+  }
+};
+
+export const addToCart = async (productData: {
+  productDetailCode: number;
+  productCode: number;
+  quantity: number;
+  carvingContent?: string;
+}) => {
+  try {
+    const requestData = {
+      products: [
+        {
+          productDetailCode: productData.productDetailCode,
+          productCode: productData.productCode,
+          quantity: productData.quantity,
+          carvingContent: productData.carvingContent || null,
+        },
+      ],
+    };
+
+    await instance.post('/carts', {
+      requireAuth: true,
+      body: JSON.stringify(requestData),
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('장바구니 추가 중 오류 발생:', error);
     throw error;
   }
 };

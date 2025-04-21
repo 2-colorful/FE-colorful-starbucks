@@ -41,7 +41,7 @@ export default async function RootLayout({
   return (
     <html lang='ko-KR'>
       <body className={`${inter.className} antialiased bg-gray-100`}>
-        <div className='min-w-xs max-w-3xl w-full mx-auto h-dvh bg-white relative overflow-x-hidden overflow-y-scroll scrollbar-hidden'>
+        <div className='min-w-xs max-w-3xl w-full mx-auto h-dvh bg-white relative overflow-x-hidden overflow-y-scroll scrollbar-hidden selection:bg-primary-100/20 selection:text-black'>
           <AuthContextProvider isAuth={isAuth}>
             <MenuProvider>
               <ModalProvider>

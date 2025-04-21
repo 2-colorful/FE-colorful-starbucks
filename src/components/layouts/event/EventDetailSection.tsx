@@ -15,6 +15,7 @@ export default function EventDetailSection({
           alt={eventDetail.title + eventDetail.description}
           width={370}
           height={1500}
+          unoptimized={true}
           className='w-full h-auto'
         />
       </div>

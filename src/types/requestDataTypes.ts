@@ -21,3 +21,55 @@ export interface UpdateCartDataType {
   productDetailCode: number;
   quantity: number;
 }
+
+export interface UpdateDefaultAddressDataType {
+  memberAddressUuid: string;
+  defaultAddress: true;
+}
+
+export interface UpdateAddressDataType {
+  addressNickname: string;
+  receiverName: string;
+  defaultAddress: boolean;
+  zoneCode: string;
+  address: string;
+  detailAddress: string;
+  phoneNumber: string;
+}
+
+export interface CreateAddressDataType {
+  addressNickname: string;
+  receiverName: string;
+  zoneCode: string;
+  address: string;
+  detailAddress: string;
+  phoneNumber: string;
+}
+
+export interface PreOrderRequestType {
+  couponUuid: string;
+  totalAmount: number;
+  discountAmount: number;
+  memberAddressUuid: string;
+  receiverName: string;
+  memberUuid: string;
+  orderDetails: OrderDetailType[];
+}
+
+export interface OrderDetailType {
+  productCode: number;
+  productDetailCode: number;
+  productName: string;
+  sizeName: string | null;
+  colorName: string | null;
+  quantity: number;
+  price: number;
+  carving: boolean;
+}
+
+export interface MemberCouponListRequestType {
+  cusor?: number;
+  page: number;
+  size: number;
+  sort: 'createdAt';
+}

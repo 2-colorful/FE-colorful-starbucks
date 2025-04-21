@@ -17,6 +17,7 @@ export default function ProductItem({ product }: { product: ProductDataType }) {
         <Image
           src={productThumbnailUrl}
           alt={productName}
+          unoptimized={true}
           className='rounded-[4px]'
           fill
           sizes='100%'

@@ -72,6 +72,7 @@ export default function ProductPriceFilterRow({
             key={option.priceOptionId}
             ref={isSelected ? selectedOptionRef : null}
             href={`${pathname}?${updatePriceParams(option)}`}
+            replace
             className={`whitespace-nowrap text-body3 ${isSelected ? 'text-primary-100 font-black' : 'text-text-700'}`}
             scroll={false}
           >

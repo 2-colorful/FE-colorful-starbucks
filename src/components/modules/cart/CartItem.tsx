@@ -53,6 +53,7 @@ export default async function CartItem({
             src={product.productThumbnailUrl}
             alt={`${product.productName} 이미지`}
             fill
+            unoptimized={true}
             className='object-cover'
             sizes='100%'
             priority

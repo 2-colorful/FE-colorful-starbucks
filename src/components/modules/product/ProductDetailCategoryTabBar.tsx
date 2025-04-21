@@ -8,7 +8,7 @@ import { ProductBottomTabBarWrapper } from '@/components/ui/common/product/Produ
 
 type ProductDetailCategoryTabBarProps = {
   categories: SubDetailCategoryType[];
-  selectedIds: string[] | undefined;
+  selectedIds: string[] | string | undefined;
 };
 
 export default function ProductDetailCategoryTabBar({
@@ -17,7 +17,12 @@ export default function ProductDetailCategoryTabBar({
 }: ProductDetailCategoryTabBarProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const selectedArray = selectedIds || [];
+
+  const selectedArray = React.useMemo(() => {
+    if (!selectedIds) return [];
+    if (typeof selectedIds === 'string') return [selectedIds];
+    return selectedIds;
+  }, [selectedIds]);
 
   const updateQueryParams = (categoryId: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -49,6 +54,7 @@ export default function ProductDetailCategoryTabBar({
           <Link
             key={category.bottomCategoryId}
             href={`${pathname}?${updateQueryParams(category.bottomCategoryId)}`}
+            replace
             className={`text-body3 ${isActive ? 'text-primary-100 font-black' : 'text-text-700'}`}
             scroll={false}
           >

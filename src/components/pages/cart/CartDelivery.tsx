@@ -10,10 +10,7 @@ export default function CartDelivery() {
         <br />
         배송지를 등록해주세요.
       </Body>
-      <Link
-        href={'/delivery/create'}
-        className='text-primary-100 text-caption2'
-      >
+      <Link href={'/address/create'} className='text-primary-100 text-caption2'>
         배송지 등록
       </Link>
     </section>

@@ -1,9 +1,11 @@
 import {
   getBottomCategories,
+  getInitialFilteredProducts,
   getTopCategories,
 } from '@/actions/product-service';
 import ProductCategoryTopTabBar from '@/components/layouts/product/ProductCategoryTopTabBar';
 import ProductDetailCategorySection from '@/components/layouts/product/ProductDetailCategorySection';
+import FilteredProductList from '@/components/pages/product/FilteredProductList';
 import { SearchParamsType } from '@/data/productDummy/productSearchTypes';
 
 export default async function ProductsPage({
@@ -13,6 +15,9 @@ export default async function ProductsPage({
 }) {
   const params = await searchParams;
   const filteredParams: SearchParamsType = {};
+  if (!params.page) {
+    params.page = '0';
+  }
 
   Object.entries(params).forEach(([key, value]) => {
     filteredParams[key] = value;
@@ -20,9 +25,10 @@ export default async function ProductsPage({
 
   const topCategoryId = params.topCategoryId || '0';
 
-  const [topCategory, bottomCategory] = await Promise.all([
+  const [topCategory, bottomCategory, initialData] = await Promise.all([
     getTopCategories(),
     getBottomCategories(Number(topCategoryId)),
+    getInitialFilteredProducts(filteredParams),
   ]);
 
   return (
@@ -36,7 +42,12 @@ export default async function ProductsPage({
           />
         </nav>
       </header>
-      <main></main>
+      <main>
+        <FilteredProductList
+          params={filteredParams}
+          initialData={initialData}
+        />
+      </main>
     </>
   );
 }
