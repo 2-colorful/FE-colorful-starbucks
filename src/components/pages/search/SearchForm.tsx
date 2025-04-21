@@ -55,7 +55,6 @@ export default function SearchForm() {
 
     try {
       await addRecentSearchHistory(inputValue);
-      await addRecentSearchHistory(inputValue);
       router.push(`/search/result?${searchParams.toString()}`, {
         scroll: false,
       });
