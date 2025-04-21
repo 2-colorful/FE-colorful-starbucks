@@ -1,12 +1,15 @@
 'use server';
 
+import { PaginatedResponseType } from '@/types/products/productTypes';
 import { instance } from '../instance';
 import {
   AutoCompleteItem,
   RecentSearchType,
 } from '@/types/search/recentSearchTypes';
 import {
+  CategoryCountType,
   SearchApiParams,
+  SearchParamsType,
   SearchResponseType,
   SearchUrlParams,
 } from '@/types/search/requestDataTypes';
@@ -99,31 +102,39 @@ const transformSearchParams = (params: SearchUrlParams): SearchApiParams => {
 };
 
 export const getSearchResults = async (
-  params: SearchUrlParams,
+  data: SearchParamsType,
 ): Promise<SearchResponseType> => {
+  if (!data.query) {
+    throw new Error('Query parameter is required');
+  }
+
+  const defaultSize = 12;
+
+  const params: Record<string, string | number> = {
+    query: data.query,
+  };
+
+  if (data.category !== undefined) params.category = data.category;
+  if (data.cursor !== undefined) params.cursor = data.cursor;
+  if (data.minPrice !== undefined) params.minPrice = data.minPrice;
+  if (data.maxPrice !== undefined) params.maxPrice = data.maxPrice;
+  if (data.size !== undefined) params.size = data.size;
+  else params.size = defaultSize;
+  if (data.page !== undefined) params.page = data.page;
+
+  const searchParams = new URLSearchParams(
+    Object.entries(params).map(([key, value]) => [key, String(value)]),
+  ).toString();
+
   try {
-    const apiParams = transformSearchParams(params);
-    const response = await instance.post<SearchResponseType>('/search', {
-      body: JSON.stringify(apiParams),
-      requireAuth: false,
-    });
+    const response = await instance.get<SearchResponseType>(
+      `/es/search?${searchParams}`,
+      { requireAuth: false },
+    );
 
-    if (response.data) {
-      return response.data;
-    }
-
-    return {
-      content: [],
-      hasNext: false,
-      nextCursor: 0,
-    };
+    return response.data;
   } catch (error) {
-    console.error('검색 결과를 가져오는 중 오류 발생:', error);
-    return {
-      content: [],
-      hasNext: false,
-      nextCursor: 0,
-    };
+    throw error;
   }
 };
 
@@ -135,10 +146,12 @@ export const getSearchResultsByPage = async (
     const apiParams = transformSearchParams(params);
     apiParams.page = page;
 
-    const response = await instance.post<SearchResponseType>('/search', {
-      body: JSON.stringify(apiParams),
-      requireAuth: false,
-    });
+    const response = await instance.get<SearchResponseType>(
+      `/es/search?${apiParams}`,
+      {
+        requireAuth: false,
+      },
+    );
 
     if (response.data) {
       return response.data;
@@ -167,10 +180,12 @@ export const getMoreSearchResults = async (
     const apiParams = transformSearchParams(params);
     apiParams.cursor = cursor;
 
-    const response = await instance.post<SearchResponseType>('/search/next', {
-      body: JSON.stringify(apiParams),
-      requireAuth: false,
-    });
+    const response = await instance.get<SearchResponseType>(
+      `/es/search?${apiParams}`,
+      {
+        requireAuth: false,
+      },
+    );
 
     if (response.data) {
       return response.data;
@@ -189,4 +204,38 @@ export const getMoreSearchResults = async (
       nextCursor: cursor,
     };
   }
+};
+
+export const getSearchCounts = async (params: {
+  query: string;
+  minPrice?: number;
+  maxPrice?: number;
+}): Promise<CategoryCountType[]> => {
+  const queryData = Object.entries(params).filter(
+    ([_, value]) => value !== undefined,
+  );
+  const searchParams = new URLSearchParams(
+    queryData.map(([key, value]) => [key, String(value)]),
+  ).toString();
+
+  try {
+    const response = await instance.get<CategoryCountType[]>(
+      `/es/categories?${searchParams}`,
+      {
+        requireAuth: false,
+      },
+    );
+
+    return response.data || [];
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const fetchMoreSearchResults = async (
+  params: SearchParamsType,
+  cursor: number,
+): Promise<PaginatedResponseType> => {
+  const queryParams = { ...params, cursor };
+  return getSearchResults(queryParams);
 };
