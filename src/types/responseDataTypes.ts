@@ -104,7 +104,7 @@ export interface CouponListDataType {
 export interface CouponDataType {
   couponName: string;
   couponDescription: string;
-  discountType: 'FIXED_AMOUNT';
+  discountType: DiscountType;
   discountValue: number;
   couponImageUrl: string;
   maxDiscountAmount: number;
@@ -112,3 +112,5 @@ export interface CouponDataType {
   startAt: string;
   expiredAt: string;
 }
+
+export type DiscountType = 'FIXED_AMOUNT' | 'PERCENTAGE';

@@ -10,6 +10,7 @@ import {
   getDetailDeliveryAddress,
 } from '@/actions/address-service';
 import { getCouponDetail } from '@/actions/coupon-service';
+import { getProudctDetailData } from '@/actions/product-service';
 
 type SearchParamType = {
   cartId: string;
@@ -22,10 +23,10 @@ type PaymentPageProps = {
 };
 
 export default async function PaymentPage({ searchParams }: PaymentPageProps) {
-  const { cartId, memberAddressUuid, couponUuid } = await searchParams;
+  const params = await searchParams;
 
   const cartIds =
-    cartId.split(',').map((id) => ({ cartId: Number(id) })) ||
+    params.cartId.split(',').map((id) => ({ cartId: Number(id) })) ||
     ([] as { cartId: number }[]);
 
   const cartDatas = await Promise.all(
@@ -36,11 +37,23 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
     }),
   );
 
-  const couponData = await getCouponDetail(couponUuid);
+  const couponData = await getCouponDetail(params.couponUuid);
 
-  const addressData = memberAddressUuid
-    ? await getDetailDeliveryAddress(memberAddressUuid)
+  const addressData = params.memberAddressUuid
+    ? await getDetailDeliveryAddress(params.memberAddressUuid)
     : await getDefaultDeliveryAddress();
+
+  const selectedCartProducts = await Promise.all(
+    cartDatas.map(async (item) => {
+      const data = await getProudctDetailData(item.productDetailCode);
+
+      return data.price * item.quantity;
+    }),
+  );
+
+  const orderPrice = selectedCartProducts.reduce((acc, item) => {
+    return acc + item;
+  }, 0);
 
   return (
     <main>
@@ -53,11 +66,11 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
       <section className='px-6 data-[slot=accordion-item]:border-none'>
         <Accordion type='multiple' defaultValue={['coupon']}>
           <OrderInfo cartDatas={cartDatas} />
-          <CouponInfo couponData={couponData} />
+          <CouponInfo couponData={couponData} orderPrice={orderPrice} />
         </Accordion>
       </section>
 
-      <TotalPayment cartDatas={cartDatas} />
+      <TotalPayment orderPrice={orderPrice} couponData={couponData} />
 
       <section className='pt-6 px-6 pb-20'>
         <Caption className='p-4 bg-gray-200 text-text-500'>

@@ -31,7 +31,7 @@ export const getCouponDetail = async (couponUuid?: string) => {
   if (!couponUuid) return;
 
   try {
-    const res = await instance.get<CouponDataType>(`/couponse/${couponUuid}`);
+    const res = await instance.get<CouponDataType>(`/coupons/${couponUuid}`);
 
     return res.data;
   } catch (error) {

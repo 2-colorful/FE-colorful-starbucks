@@ -1,33 +1,25 @@
-import { getProudctDetailData } from '@/actions/product-service';
 import { Body, BottomSheet, Button, SubTitle } from '@/components/ui/common';
+import { calculateDiscount } from '@/lib/calculateDiscount';
 import { priceFormatter } from '@/lib/priceFormatter';
-import { CartDetailType } from '@/types/responseDataTypes';
+import { CouponDataType } from '@/types/responseDataTypes';
 
 type TotalPaymentProps = {
-  cartDatas: CartDetailType[];
-  coupon?: { discountAmount: number }[];
+  orderPrice: number;
+  couponData?: CouponDataType;
 };
 
 export default async function TotalPayment({
-  cartDatas,
-  coupon,
+  orderPrice,
+  couponData,
 }: TotalPaymentProps) {
-  const selectedCartProducts = await Promise.all(
-    cartDatas.map(async (item) => {
-      const data = await getProudctDetailData(item.productDetailCode);
-
-      return data.price * item.quantity;
-    }),
-  );
-
-  const orderPrice = selectedCartProducts.reduce((acc, item) => {
-    return acc + item;
-  }, 0);
-
   const totalDiscountPrice =
-    coupon?.reduce((acc, item) => {
-      return acc + item.discountAmount;
-    }, 0) || 0;
+    couponData?.discountType === 'FIXED_AMOUNT'
+      ? couponData.discountValue
+      : calculateDiscount(
+          orderPrice,
+          couponData?.discountValue,
+          couponData?.maxDiscountAmount,
+        );
 
   const totalPrice = orderPrice - totalDiscountPrice;
 
@@ -36,15 +28,15 @@ export default async function TotalPayment({
       <section className='bg-gray-300 p-6'>
         <ul className='gap-y-2.5 grid'>
           <li>
-            <Body className='flex w-full justify-between' level={3}>
+            <Body level={3} className='flex w-full justify-between'>
               <span>주문 금액</span>
-              <span>{totalPrice.toLocaleString()}원</span>
+              <span>{orderPrice.toLocaleString()}원</span>
             </Body>
           </li>
           <li>
-            <Body className='flex w-full justify-between' level={3}>
+            <Body level={3} className='flex w-full justify-between'>
               <span>쿠폰 할인</span>
-              <span>0원</span>
+              <span>{priceFormatter(totalDiscountPrice)}원</span>
             </Body>
           </li>
         </ul>
