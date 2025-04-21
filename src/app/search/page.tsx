@@ -1,6 +1,7 @@
 import SearchForm from '@/components/pages/search/SearchForm';
 import RecentSearchList from '@/components/modules/search/RecentSearchList';
 import { getRecentSearchHistory } from '@/actions/search-service';
+export const dynamic = 'force-dynamic';
 
 export default async function SearchPage() {
   const recentSearchHistoryData = await getRecentSearchHistory();

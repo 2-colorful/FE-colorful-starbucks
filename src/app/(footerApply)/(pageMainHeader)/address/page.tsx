@@ -5,6 +5,7 @@ import IconPlus from '@/assets/icons/address/plusIcon.svg';
 import DeliveryAddressList from '@/components/modules/address/DeliveryAddressList';
 import { getDeliveryAddresses } from '@/actions/address-service';
 import { cn } from '@/lib/utils';
+export const dynamic = 'force-dynamic';
 
 export default async function AddressPage() {
   const deliveryAddressDatas = (await getDeliveryAddresses())?.sort((a, b) => {
