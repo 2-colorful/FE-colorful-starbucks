@@ -1,5 +1,5 @@
 import { Body, Tag } from '@/components/ui/common';
-import { AddressDataType } from '@/types/responseDataTypes';
+import type { AddressDataType } from '@/types/responseDataTypes';
 
 export default function DeliveryItem({ data }: { data: AddressDataType }) {
   return (

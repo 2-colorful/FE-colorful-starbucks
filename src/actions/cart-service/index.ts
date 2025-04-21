@@ -8,7 +8,7 @@ import type {
 } from '@/types/requestDataTypes';
 import type { CartDatasType, CartDetailType } from '@/types/responseDataTypes';
 import { instance } from '../instance';
-import { CART_TAG } from '@/data/tagDatas';
+import { CART_DETAIL_TAG, CART_TAG } from '@/data/tagDatas';
 
 export const getCartDatas = async (size: number = 10) => {
   try {
@@ -28,7 +28,8 @@ export const getCartDetail = async (cartId: number) => {
   try {
     const res = await instance.get<CartDetailType>(`/carts/${cartId}`, {
       requireAuth: true,
-      cache: 'force-cache',
+      next: { tags: [CART_DETAIL_TAG] },
+      cache: 'default',
     });
 
     return res.data;
@@ -45,6 +46,7 @@ export const updateCartChecked = async (data: UpdateCartCheckedType) => {
     });
 
     revalidateTag(CART_TAG);
+    revalidateTag(CART_DETAIL_TAG);
   } catch (error) {
     throw error;
   }
@@ -61,6 +63,7 @@ export const updateCartData = async (
     });
 
     revalidateTag(CART_TAG);
+    revalidateTag(CART_DETAIL_TAG);
   } catch (error) {
     throw error;
   }
@@ -74,6 +77,7 @@ export const updateAllChecked = async (checked: CheckedState) => {
     });
 
     revalidateTag(CART_TAG);
+    revalidateTag(CART_DETAIL_TAG);
   } catch (error) {
     throw error;
   }
@@ -89,6 +93,7 @@ export const deleteCartItem = async (cartItems: { cartId: number }[]) => {
     });
 
     revalidateTag(CART_TAG);
+    revalidateTag(CART_DETAIL_TAG);
   } catch (error) {
     throw error;
   }
@@ -101,6 +106,7 @@ export const deleteAllCart = async () => {
     });
 
     revalidateTag(CART_TAG);
+    revalidateTag(CART_DETAIL_TAG);
   } catch (error) {
     throw error;
   }
