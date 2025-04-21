@@ -6,7 +6,6 @@ import type { RecentSearchType } from '@/types/search/recentSearchTypes';
 
 type RecentSearchItemProps = {
   recentSearchHistory: RecentSearchType;
-  callbackUrl?: string;
   onRemove: () => void;
 };
 

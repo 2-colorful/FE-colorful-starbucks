@@ -13,15 +13,13 @@ import type { RecentSearchType } from '@/types/search/recentSearchTypes';
 
 interface RecentSearchListProps {
   initialRecentSearches?: RecentSearchType[]; // optional로 변경
-  callbackUrl?: string;
 }
 
 export default function RecentSearchList({
-  initialRecentSearches = [], // 기본값 빈 배열로 설정
-  callbackUrl,
+  initialRecentSearches,
 }: RecentSearchListProps) {
   const [recentSearches, setRecentSearches] = useState<RecentSearchType[]>(
-    initialRecentSearches || [], // null/undefined 체크 추가
+    initialRecentSearches || [],
   );
 
   const handleClearAll = async () => {
@@ -30,7 +28,6 @@ export default function RecentSearchList({
   };
 
   const handleRemoveItem = async (keyword: string) => {
-    // keword에서 keyword로 수정
     await removeRecentSearchHistory(keyword);
     setRecentSearches((prev) =>
       prev.filter((item) => item.keyword !== keyword),
@@ -38,7 +35,6 @@ export default function RecentSearchList({
   };
 
   if (!recentSearches || recentSearches.length === 0) {
-    // null/undefined 체크 추가
     return (
       <SearchSection className='flex flex-col justify-center h-full'>
         <Body className='text-black text-center'>최근 검색어가 없습니다.</Body>
@@ -61,7 +57,6 @@ export default function RecentSearchList({
       <ul className='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-3.5 border-b border-[#e0e0e0] pb-5'>
         {recentSearches.map((recentSearchHistory) => (
           <RecentSearchItem
-            callbackUrl={callbackUrl}
             recentSearchHistory={recentSearchHistory}
             key={recentSearchHistory.searchAt}
             onRemove={() => handleRemoveItem(recentSearchHistory.keyword)}
