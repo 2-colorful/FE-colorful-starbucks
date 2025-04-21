@@ -133,3 +133,13 @@ export async function signUp(data: SignUpRequestData) {
 export async function auth() {
   return await getServerSession(options);
 }
+
+export async function isUserLoggedIn(): Promise<boolean> {
+  try {
+    const session = await getServerSession(options);
+    return !!session;
+  } catch (error) {
+    console.error('세션 확인 중 오류 발생:', error);
+    return false;
+  }
+}

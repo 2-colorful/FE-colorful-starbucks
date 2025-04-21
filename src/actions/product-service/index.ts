@@ -2,7 +2,6 @@
 
 import type { SearchParamsType } from '@/data/productDummy/productSearchTypes';
 import type { ProductCategoryTopType } from '@/types/products/productCategoryType';
-import type { ProductTagsType } from '@/types/products/productRequestTypes';
 import type {
   DailyRecentlyViewedProductsType,
   PaginatedResponseType,
@@ -127,27 +126,6 @@ export const getProductDetail = async (
   }
 };
 
-export const getProductTags = async (
-  productCode: number,
-): Promise<ProductTagsType> => {
-  try {
-    const response = await fetch(
-      `http://localhost:8080/api/v1/products/${productCode}/tags`,
-    );
-    if (!response.ok) {
-      throw new Error(
-        `상품 태그 정보를 가져오는데 실패했습니다: ${response.status}`,
-      );
-    }
-
-    const result = await response.json();
-    return result.data;
-  } catch (error) {
-    console.error('상품 태그 정보 조회 중 오류 발생:', error);
-    throw error;
-  }
-};
-
 export async function getProductCategories(
   topCategoryId: number,
 ): Promise<ProductCategoryTopType[]> {
@@ -159,32 +137,6 @@ export async function getProductCategories(
 
   return data;
 }
-
-export interface ProductDetail {
-  productCode: number;
-  productName: string;
-  price: number;
-  productThumbnailUrl: string;
-  isNew?: boolean;
-  isBest?: boolean;
-  isMarkable?: boolean;
-}
-
-export const getProductDetailDummy = async (productCode: number) => {
-  try {
-    // 고정된 더미 데이터 반환
-    return {
-      productCode: productCode,
-      productName: 'SS 플라워 마켓 스탠리 텀블러 591ml',
-      price: 43000,
-      productThumbnailUrl: '/images/productThumbnails/1000.png',
-      isBest: true,
-    };
-  } catch (error) {
-    console.error('더미 상품 정보 생성 중 오류 발생:', error);
-    throw error;
-  }
-};
 
 export const getProductSimple = async (
   productCode: number,
@@ -203,49 +155,40 @@ export const getProductSimple = async (
   }
 };
 
-export async function getRecentlyProducts(): Promise<
-  DailyRecentlyViewedProductsType[]
-> {
+export async function fetchRecentlyViewedItem(
+  productCode: number,
+  productThumbnailUrl: string,
+) {
   try {
-    const response = await fetch(
-      `${process.env.BASE_URL}/users/recently-view-products`,
-    );
-    const result = await response.json();
-    return result.data;
+    const response = await instance.post(`/users/recently-view-products`, {
+      requireAuth: true,
+      body: JSON.stringify({
+        productCode,
+        productThumbnailUrl,
+      }),
+    });
+    return response.data;
   } catch (error) {
+    console.error('최근 본 상품 추가 실패:', error);
     throw error;
   }
 }
 
-export async function getRecentlyProductsDummy(): Promise<
+export async function getRecentlyProducts(): Promise<
   DailyRecentlyViewedProductsType[]
 > {
-  return [
-    {
-      viewedAt: '2025-04-14',
-      recentlyViewProducts: [
-        { productCode: 1000643461774 },
-        { productCode: 1000038695356 },
-        { productCode: 1000548972182 },
-      ],
-    },
-    {
-      viewedAt: '2025-04-13',
-      recentlyViewProducts: [
-        { productCode: 1000380318119 },
-        { productCode: 1000642803667 },
-      ],
-    },
-    {
-      viewedAt: '2025-04-10',
-      recentlyViewProducts: [
-        { productCode: 1000605449653 },
-        { productCode: 1000680163829 },
-        { productCode: 2097002153962 },
-        { productCode: 1000522642212 },
-      ],
-    },
-  ];
+  try {
+    const response = await instance.get<DailyRecentlyViewedProductsType[]>(
+      `/users/recently-view-products`,
+      {
+        requireAuth: true,
+      },
+    );
+    return response.data;
+  } catch (error) {
+    console.error('최근 본 상품 목록 조회 실패:', error);
+    return [];
+  }
 }
 
 export async function getProduct(productCode: number): Promise<ProductTypes> {
