@@ -1,4 +1,6 @@
 export interface SearchParamsType {
+  keyword?: string;
+
   topCategoryId?: string;
 
   bottomCategoryIds?: string | string[];

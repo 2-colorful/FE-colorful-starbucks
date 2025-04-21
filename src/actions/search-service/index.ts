@@ -1,73 +1,192 @@
 'use server';
 
-import { SearchQueryRequestDataType } from '@/types/search/requestDataTypes';
+import { instance } from '../instance';
+import {
+  AutoCompleteItem,
+  RecentSearchType,
+} from '@/types/search/recentSearchTypes';
+import {
+  SearchApiParams,
+  SearchResponseType,
+  SearchUrlParams,
+} from '@/types/search/requestDataTypes';
 
-export const getSearchResults = async (data: SearchQueryRequestDataType) => {
-  const queryData = Object.entries(data);
-  const searchParams = new URLSearchParams(queryData).toString();
-
+export const getRecentSearchHistory = async (): Promise<RecentSearchType[]> => {
   try {
-    const res = await fetch(`/api/v1/search?${searchParams}`, {
-      method: 'GET',
+    const result = await instance.get<{
+      recentlySearchKeywords: RecentSearchType[];
+    }>(`/users/recently-search`, {
+      requireAuth: true,
     });
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
-
-    return await res.json();
+    return result.data.recentlySearchKeywords;
   } catch (error) {
     throw error;
   }
 };
 
-export const getRecentSearchHistory = async () => {
+export async function clearAllRecentSearchHistory() {
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'GET',
+    await instance.delete(`/users/recently-search`, {
+      requireAuth: true,
     });
+  } catch (error) {
+    throw error;
+  }
+}
 
-    if (!res.ok) {
-      throw new Error('Failed to fetch data');
-    }
+export async function removeRecentSearchHistory(keyword: string) {
+  try {
+    await instance.delete(`/users/recently-search/${keyword}`, {
+      requireAuth: true,
+    });
+  } catch (error) {
+    throw error;
+  }
+}
+export const addRecentSearchHistory = async (keyword: string) => {
+  try {
+    await instance.post(`/users/recently-search?keyword=${keyword}`, {
+      requireAuth: true,
+    });
+    console.log(keyword, '저장완료');
 
-    return await res.json();
+    return { success: true };
   } catch (error) {
     throw error;
   }
 };
 
-export const deleteRecentSearchHistory = async (id: number[]) => {
-  const recentSearchHistoryId = id.map((item) => ({ id: item }));
+export const getAutoCompleteResult = async (
+  keyword: string,
+): Promise<string[]> => {
+  if (!keyword.trim()) return [];
+
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'DELETE',
-      body: JSON.stringify({ recentSearchHistoryId }),
-    });
+    const response = await instance.get<{ autoSearchList: AutoCompleteItem[] }>(
+      `/es/auto-complete?keyword=${keyword}`,
+      {
+        requireAuth: false,
+      },
+    );
 
-    if (!res.ok) {
-      throw new Error('Failed to delete data');
-    }
-
-    return await res.json();
+    return response.data.autoSearchList.map((item) => item.productName);
   } catch (error) {
-    throw error;
+    console.error('Auto-complete API error:', error);
+    return [];
   }
 };
 
-export const addRecentSearchHistory = async (query: string) => {
+const transformSearchParams = (params: SearchUrlParams): SearchApiParams => {
+  const apiParams: SearchApiParams = {
+    query: params.query,
+    size: params.size ? Number(params.size) : 20,
+  };
+
+  if (params.minPrice) {
+    apiParams.minPrice = Number(params.minPrice);
+  }
+
+  if (params.maxPrice) {
+    apiParams.maxPrice = Number(params.maxPrice);
+  }
+
+  if (params.page) {
+    apiParams.page = Number(params.page);
+  }
+
+  return apiParams;
+};
+
+export const getSearchResults = async (
+  params: SearchUrlParams,
+): Promise<SearchResponseType> => {
   try {
-    const res = await fetch(`/api/v1/search`, {
-      method: 'POST',
-      body: JSON.stringify({ query }),
+    const apiParams = transformSearchParams(params);
+    const response = await instance.post<SearchResponseType>('/search', {
+      body: JSON.stringify(apiParams),
+      requireAuth: false,
     });
 
-    if (!res.ok) {
-      throw new Error('Failed to add data');
+    if (response.data) {
+      return response.data;
     }
 
-    return await res.json();
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: 0,
+    };
   } catch (error) {
-    throw error;
+    console.error('검색 결과를 가져오는 중 오류 발생:', error);
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: 0,
+    };
+  }
+};
+
+export const getSearchResultsByPage = async (
+  params: SearchUrlParams,
+  page: number,
+): Promise<SearchResponseType> => {
+  try {
+    const apiParams = transformSearchParams(params);
+    apiParams.page = page;
+
+    const response = await instance.post<SearchResponseType>('/search', {
+      body: JSON.stringify(apiParams),
+      requireAuth: false,
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: 0,
+    };
+  } catch (error) {
+    console.error('특정 페이지 검색 결과를 가져오는 중 오류 발생:', error);
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: 0,
+    };
+  }
+};
+
+export const getMoreSearchResults = async (
+  params: SearchUrlParams,
+  cursor: number,
+): Promise<SearchResponseType> => {
+  try {
+    const apiParams = transformSearchParams(params);
+    apiParams.cursor = cursor;
+
+    const response = await instance.post<SearchResponseType>('/search/next', {
+      body: JSON.stringify(apiParams),
+      requireAuth: false,
+    });
+
+    if (response.data) {
+      return response.data;
+    }
+
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: cursor,
+    };
+  } catch (error) {
+    console.error('추가 검색 결과를 가져오는 중 오류 발생:', error);
+    return {
+      content: [],
+      hasNext: false,
+      nextCursor: cursor,
+    };
   }
 };
