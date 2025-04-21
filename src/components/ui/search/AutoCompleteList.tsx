@@ -26,7 +26,7 @@ export default function AutoCompleteList({
     const searchParams = new URLSearchParams();
     searchParams.set('query', suggestion);
 
-    router.push(`/search/result?${searchParams.toString()}`, {
+    router.push(`/result?${searchParams.toString()}`, {
       scroll: false,
     });
   };

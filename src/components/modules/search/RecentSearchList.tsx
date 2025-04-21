@@ -1,4 +1,3 @@
-// RecentSearchList.tsx 수정
 'use client';
 
 import { useState } from 'react';
