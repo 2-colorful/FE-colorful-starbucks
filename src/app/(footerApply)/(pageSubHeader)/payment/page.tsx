@@ -10,7 +10,13 @@ import {
   getDetailDeliveryAddress,
 } from '@/actions/address-service';
 import { getCouponDetail } from '@/actions/coupon-service';
-import { getProudctDetailData } from '@/actions/product-service';
+import {
+  getProductDetail,
+  getProudctDetailData,
+} from '@/actions/product-service';
+import { calculateDiscount } from '@/lib/calculateDiscount';
+import { OrderDetailType } from '@/types/requestDataTypes';
+import PaymentRequestButton from '@/components/modules/payment/PaymentRequestButton';
 
 type SearchParamType = {
   cartId: string;
@@ -55,6 +61,35 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
     return acc + item;
   }, 0);
 
+  const totalDiscountPrice =
+    couponData?.discountType === 'FIXED_AMOUNT'
+      ? couponData.discountValue
+      : calculateDiscount(
+          orderPrice,
+          couponData?.discountValue,
+          couponData?.maxDiscountAmount,
+        );
+
+  const totalPrice = orderPrice - totalDiscountPrice;
+
+  const orderDetails: OrderDetailType[] = await Promise.all(
+    cartDatas.map(async (item) => {
+      const productDetail = await getProudctDetailData(item.productDetailCode);
+      const product = await getProductDetail(item.productCode);
+
+      return {
+        productCode: item.productCode,
+        productDetailCode: item.productDetailCode,
+        productName: product.productName,
+        sizeName: productDetail.sizeName,
+        colorName: productDetail.colorName,
+        quantity: item.quantity,
+        price: productDetail.price,
+        carving: item.carvingContent ? true : false,
+      };
+    }),
+  );
+
   return (
     <main>
       <Heading.Wrapper>
@@ -67,10 +102,23 @@ export default async function PaymentPage({ searchParams }: PaymentPageProps) {
         <Accordion type='multiple' defaultValue={['coupon']}>
           <OrderInfo cartDatas={cartDatas} />
           <CouponInfo couponData={couponData} orderPrice={orderPrice} />
+
+          <PaymentRequestButton
+            addressData={addressData}
+            orderDetails={orderDetails}
+            totalDiscountPrice={Number(totalDiscountPrice)}
+            totalPrice={Number(totalPrice)}
+          />
         </Accordion>
       </section>
 
-      <TotalPayment orderPrice={orderPrice} couponData={couponData} />
+      <TotalPayment
+        paymentData={{
+          orderPrice,
+          totalPrice,
+          totalDiscountPrice,
+        }}
+      />
 
       <section className='pt-6 px-6 pb-20'>
         <Caption className='p-4 bg-gray-200 text-text-500'>
