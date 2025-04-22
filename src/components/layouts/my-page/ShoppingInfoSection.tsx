@@ -11,7 +11,7 @@ import {
 
 export default function ShoppingInfoSection() {
   return (
-    <section className='bg-gray-300 p-6 '>
+    <section className='bg-gray-300 p-6 mt-8'>
       <h2 className='text-xl font-bold mb-6'>내정보</h2>
 
       <div className='space-y-6'>
@@ -42,7 +42,7 @@ export default function ShoppingInfoSection() {
         <ShoppingInfoItem
           icon={<Truck className='w-6 h-6 text-gray-600' />}
           title='배송지 관리'
-          href='/my-page/shipping-addresses'
+          href='/address'
         />
 
         <ShoppingInfoItem

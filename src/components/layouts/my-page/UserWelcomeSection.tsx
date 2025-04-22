@@ -1,18 +1,29 @@
+import { UserInfoType } from '@/types/user';
 import { ArrowRight } from 'lucide-react';
 
-export default function UserWelcomeSection() {
-  const userData = {
-    name: '홍길동',
-    membershipLevel: '골드',
+export default function UserWelcomeSection({
+  myInfo,
+}: {
+  myInfo: UserInfoType;
+}) {
+  const levelColorClass = {
+    WHITE: 'text-gray-500',
+    GREEN: 'text-green-600',
+    GOLD: 'text-amber-500',
+    BLACK: 'text-slate-900',
   };
 
   return (
-    <section className='bg-white  p-6 '>
+    <section className='bg-white p-6'>
       <div className='flex flex-col gap-2'>
-        <h2 className='text-xl font-bold'>{userData.name}님 환영합니다.</h2>
+        <h2 className='text-xl font-bold'>{myInfo.nickName}님 환영합니다.</h2>
         <p className='text-base'>
           회원님의 등급은{' '}
-          <span className='font-semibold'>{userData.membershipLevel}</span>
+          <span
+            className={`font-semibold ${levelColorClass[myInfo.memberLevel]}`}
+          >
+            {myInfo.memberLevel}
+          </span>
           입니다.
         </p>
 
