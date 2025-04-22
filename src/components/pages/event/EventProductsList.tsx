@@ -11,7 +11,7 @@ export default async function EventProductsList({
   const eventProducts = await getEventProducts(eventUuid);
 
   return (
-    <section className='padded mt-4 ml-4 mr-4 flex justify-center flex-col'>
+    <section className='padded mt-4 ml-4 mr-4 flex justify-center flex-col pb-16'>
       <ul className='w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4'>
         {eventProducts.map((eventProduct) => (
           <li key={eventProduct.productCode}>
