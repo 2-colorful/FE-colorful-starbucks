@@ -19,7 +19,6 @@ export default function QuantityCounter({
   max,
   className,
 }: QuantityCounterProps) {
-  console.log('🚀 ~ max:', max);
   const handleDecrease = () => {
     setQuantity(quantity - 1);
   };

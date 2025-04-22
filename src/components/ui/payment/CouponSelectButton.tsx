@@ -10,7 +10,6 @@ export default function CouponSelectButton({
 }: {
   orderPrice?: number;
 }) {
-  console.log('🚀 ~ orderPrice:', orderPrice);
   const { openModal } = useModalContext();
 
   const handleClick = () => {

@@ -9,7 +9,6 @@ export default function DeleteCartItemButton({ cartId }: { cartId: number }) {
     try {
       await deleteCartItem(deleteCartItemData);
     } catch (error) {
-      console.log('🚀 ~ handleDeleteCartItem ~ error:', error);
       throw error;
     }
   };
