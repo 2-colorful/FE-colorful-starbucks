@@ -18,7 +18,7 @@ export default function EventTabContent({
   const activeTabRef = useRef<HTMLLIElement>(null);
 
   const handleEventClick = (eventUuid: string) => {
-    router.push(`?eventId=${eventUuid}`);
+    router.replace(`?eventId=${eventUuid}`);
   };
 
   useEffect(() => {
