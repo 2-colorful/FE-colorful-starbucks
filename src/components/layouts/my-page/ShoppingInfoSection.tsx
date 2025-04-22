@@ -1,11 +1,12 @@
 'use client';
+import { signOut } from '@/actions/auth-service';
 import ShoppingInfoItem from '@/components/pages/my-page/ShoppingInfoItem';
 import {
   FileText,
   Gift,
   Ticket,
-  Truck,
   LogOut,
+  Truck,
   ShoppingBag,
 } from 'lucide-react';
 
@@ -48,11 +49,9 @@ export default function ShoppingInfoSection() {
         <ShoppingInfoItem
           icon={<LogOut className='w-6 h-6 text-gray-600' />}
           title='로그아웃'
-          href='/logout'
-          onClick={(e) => {
-            e.preventDefault();
-            // 로그아웃 로직은 추후 구현
-            console.log('로그아웃');
+          href='/'
+          onClick={() => {
+            signOut();
           }}
         />
       </div>
