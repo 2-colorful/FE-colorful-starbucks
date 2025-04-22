@@ -29,6 +29,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.1.2
         version: 1.1.2(@types/react@19.0.12)(react@19.0.0)
+      '@tosspayments/tosspayments-sdk':
+        specifier: ^2.3.4
+        version: 2.3.4
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1770,6 +1773,9 @@ packages:
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
+
+  '@tosspayments/tosspayments-sdk@2.3.4':
+    resolution: {integrity: sha512-YypRXqS+9XtQew5TQBa21Ww8Z7QH+fOkuedfH/BaomsCqBv3qS4wMNCSYrq8pxQ7NBOOuPDw0DLvY7Bg5FWNmQ==}
 
   '@trysound/sax@0.2.0':
     resolution: {integrity: sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==}
@@ -6652,6 +6658,8 @@ snapshots:
       tailwindcss: 4.0.15
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
+
+  '@tosspayments/tosspayments-sdk@2.3.4': {}
 
   '@trysound/sax@0.2.0': {}
 
