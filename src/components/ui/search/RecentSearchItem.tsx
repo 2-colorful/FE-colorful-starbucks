@@ -16,7 +16,7 @@ export default function RecentSearchItem({
   return (
     <li className='flex justify-between items-center gap-3'>
       <Link
-        href={`/search/result?query=${encodeURIComponent(recentSearchHistory.keyword)}`}
+        href={`/result?query=${encodeURIComponent(recentSearchHistory.keyword)}`}
         className='text-sm truncate'
       >
         {recentSearchHistory.keyword}
