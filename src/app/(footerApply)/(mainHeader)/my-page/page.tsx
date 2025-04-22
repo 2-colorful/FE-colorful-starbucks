@@ -1,7 +1,9 @@
+import React from 'react';
+
 import { getUserInfo } from '@/actions/user-service';
 import ShoppingInfoSection from '@/components/layouts/my-page/ShoppingInfoSection';
 import UserWelcomeSection from '@/components/layouts/my-page/UserWelcomeSection';
-import React from 'react';
+export const dynamic = 'force-dynamic';
 
 export default async function MyPage() {
   const myInfo = await getUserInfo();
