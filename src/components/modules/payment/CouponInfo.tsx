@@ -16,7 +16,7 @@ export default async function CouponInfo({
   couponData?: CouponDataType;
   orderPrice: number;
 }) {
-  if (!couponData) return <SelectCouponAccordion />;
+  if (!couponData) return <SelectCouponAccordion orderPrice={orderPrice} />;
 
   return (
     <AccordionItem value='coupon' className='border-b border-stroke-100'>
