@@ -52,7 +52,6 @@ export interface PreOrderRequestType {
   discountAmount?: number;
   memberAddressUuid: string;
   receiverName: string;
-  memberUuid: string;
   orderDetails: OrderDetailType[];
 }
 
@@ -72,4 +71,14 @@ export interface MemberCouponListRequestType {
   page: number;
   size: number;
   sort: 'createdAt';
+}
+
+export interface OrderRequestType {
+  orderCode: number;
+  couponUuid?: string;
+  totalAmount: number;
+  discountAmount?: number;
+  memberAddressUuid: string;
+  receiverName: string;
+  orderDetails: OrderDetailType[];
 }

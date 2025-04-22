@@ -57,3 +57,5 @@ export const termConditionData = [
   { id: 2, href: '/terms?type=website', text: '홈페이지 이용약관' },
   { id: 3, href: '/terms?type=card', text: '스타벅스카드 이용약관' },
 ];
+
+export const PAYMENT_CLIENT_KEY = process.env.NEXT_PUBLIC_PAYMENTS_KEY;
