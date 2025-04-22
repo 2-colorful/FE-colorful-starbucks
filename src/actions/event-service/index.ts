@@ -63,6 +63,9 @@ export const getEventProducts = async (
   try {
     const response = await instance.get<{ content: EventProductsType[] }>(
       `/events/${eventUuid}/products?size=50&page=0`,
+      {
+        requireAuth: false,
+      },
     );
     return response.data.content;
   } catch (error) {

@@ -6,47 +6,40 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import Image from 'next/image';
 import { Autoplay, Navigation, Pagination } from 'swiper/modules';
+import Link from 'next/link';
 
-import { bannerData } from '@/data/main/dummyData';
-import Badge from './Badge';
+import { EventResponseType } from '@/actions/event-service';
 
-/* type mainBannerProps = {}; */
-/* {}: mainBannerProps */
-function MainBanner() {
+function MainBanner({ events }: { events: EventResponseType[] }) {
   return (
     <Swiper
       modules={[Navigation, Pagination, Autoplay]}
       spaceBetween={30}
       slidesPerView={1}
       pagination={{ clickable: true }}
-      autoplay={{ delay: 5000 }}
+      autoplay={{ delay: 3000 }}
       loop={true}
     >
-      {bannerData.map((banner) => (
-        <SwiperSlide key={banner.eventUuid}>
-          <div className='relative h-[400px] md:h-[500px] lg:h-[550px]'>
-            <Image
-              src={banner.eventThumbnail || '/placeholder.svg'}
-              alt={`Banner ${banner.eventUuid}`}
-              fill
-              unoptimized={true}
-              style={{ objectFit: 'cover' }}
-              sizes='100vw'
-              priority
-            />
+      {events.map((event) => (
+        <SwiperSlide key={event.eventUuid}>
+          <Link href={`/events?eventId=${event.eventUuid}`} className='block'>
+            <div className='relative h-[300px] md:h-[350px] lg:h-[400px]'>
+              <Image
+                src={event.thumbnailUrl || '/placeholder.svg'}
+                alt={`Banner ${event.eventUuid}`}
+                fill
+                unoptimized={true}
+                style={{ objectFit: 'cover' }}
+                priority
+              />
 
-            <div className='absolute inset-0 flex flex-col justify-center p-8 md:p-12 lg:p-16 z-10'>
-              {banner.badge && <Badge>{banner.badge}</Badge>}
-
-              <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4'>
-                {banner.title}
-              </h2>
-
-              <p className='text-lg md:text-xl text-white mb-4 md:mb-6 max-w-md'>
-                {banner.description}
-              </p>
+              <div className='absolute inset-0 flex flex-col justify-center p-8 md:p-12 lg:p-16 z-10 pointer-events-none'>
+                <h2 className='text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-2 md:mb-4'>
+                  {event.title}
+                </h2>
+              </div>
             </div>
-          </div>
+          </Link>
         </SwiperSlide>
       ))}
     </Swiper>

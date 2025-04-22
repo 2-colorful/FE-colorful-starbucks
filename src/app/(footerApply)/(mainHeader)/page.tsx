@@ -1,13 +1,16 @@
+import { getEvents } from '@/actions/event-service';
 import CategorySlide from '@/components/modules/main/CategorySlide';
-import EventProductList from '@/components/pages/main/EventSection';
+import EventSection from '@/components/pages/main/EventSection';
 import MainBanner from '@/components/ui/main/MainBanner';
 
-export default function Home() {
+export default async function Home() {
+  const events = await getEvents(0, 20);
+
   return (
     <main className='max-w-3xl mx-auto'>
-      <MainBanner />
+      <MainBanner events={events} />
       <CategorySlide />
-      <EventProductList />
+      <EventSection events={events} />
     </main>
   );
 }
