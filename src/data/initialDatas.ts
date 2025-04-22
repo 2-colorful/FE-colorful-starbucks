@@ -42,6 +42,11 @@ export const pageSubHeaderData: PageSubHeaderDataType[] = [
     path: '/payment',
     title: '결제하기',
   },
+  {
+    id: 6,
+    path: '/coupon',
+    title: '쿠폰',
+  },
 ];
 
 export const infoListData = [
