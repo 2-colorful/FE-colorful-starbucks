@@ -57,3 +57,7 @@ export type SimpleProduct = {
   price: number;
   isNew: boolean;
 };
+
+export type RecentlyProductUrlType = {
+  productThumbnailUrl: string;
+};

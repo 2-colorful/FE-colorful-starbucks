@@ -6,6 +6,7 @@ import type {
   DailyRecentlyViewedProductsType,
   PaginatedResponseType,
   ProductTypes,
+  RecentlyProductUrlType,
   SimpleProduct,
 } from '@/types/products/productTypes';
 import { instance } from '../instance';
@@ -293,6 +294,20 @@ export const getProductDetailWithOptions = async (
       inventoryQuantity: number;
     }>(`/product-details?${params.toString()}`, { requireAuth: false });
     return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getRecentlyProductThumbnail = async () => {
+  try {
+    const response = await instance.get<RecentlyProductUrlType>(
+      `/users/recently-view-products/first`,
+      {
+        requireAuth: true,
+      },
+    );
+    return response.data.productThumbnailUrl;
   } catch (error) {
     throw error;
   }
