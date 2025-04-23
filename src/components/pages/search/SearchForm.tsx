@@ -103,7 +103,6 @@ export default function SearchForm() {
     }
   };
 
-  // 포커스/블러 처리 개선
   const handleInputFocus = () => {
     setIsFocused(true);
     if (inputValue.trim() && suggestions.length > 0) {
@@ -112,7 +111,6 @@ export default function SearchForm() {
   };
 
   const handleInputBlur = () => {
-    // 블러 처리를 지연시켜 클릭 이벤트가 먼저 발생하도록 함
     setTimeout(() => {
       if (!suggestionsRef.current?.contains(document.activeElement)) {
         setIsFocused(false);
@@ -165,7 +163,9 @@ export default function SearchForm() {
           autoComplete='off'
           aria-autocomplete='list'
           aria-controls='search-suggestions'
+          role='combobox'
           aria-expanded={showSuggestions}
+          aria-haspopup='listbox'
         />
 
         {inputValue && (

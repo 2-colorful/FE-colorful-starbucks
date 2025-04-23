@@ -5,7 +5,6 @@ export const dynamic = 'force-dynamic';
 
 export default async function SearchPage() {
   const recentSearchHistoryData = await getRecentSearchHistory();
-  console.log('검색기록', recentSearchHistoryData);
 
   return (
     <main className='flex flex-col h-full max-h-dvh'>

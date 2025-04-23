@@ -3,8 +3,7 @@ import type { PaginatedResponseType } from '@/types/products/productTypes';
 import Loader from '@/components/ui/common/Loader';
 import BottomScrollLoader from '@/components/pages/product/BottomScrollLoader';
 import { useSearchInfiniteScroll } from '@/hooks/useSearchInfiniteScroll';
-import ProductPriceFilterRow from '@/components/modules/product/ProductPriceFilterRow';
-import { priceOptions } from '@/data/category/categoryData';
+
 import { SearchParamsType } from '@/types/search/requestDataTypes';
 import SearchResultItemSection from '@/components/layouts/search/SearchResultItemSection';
 
@@ -36,10 +35,6 @@ export default function SearchResultList({
 
   return (
     <section className='flex flex-col'>
-      <div className='  bg-white z-10'>
-        <ProductPriceFilterRow title='가격' priceOptions={priceOptions} />
-      </div>
-
       <div className='px-4 py-4'>
         {products.map((pageData, index) => (
           <SearchResultItemSection key={index} pageData={pageData} />

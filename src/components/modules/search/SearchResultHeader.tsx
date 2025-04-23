@@ -3,6 +3,8 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import { CategoryCountType } from '@/types/search/requestDataTypes';
 import { useEffect, useRef } from 'react';
+import ProductPriceFilterRow from '../product/ProductPriceFilterRow';
+import { priceOptions } from '@/data/category/categoryData';
 
 interface SearchResultHeaderProps {
   query: string;
@@ -82,6 +84,9 @@ export default function SearchResultHeader({
                 </button>
               );
             })}
+          </div>
+          <div className='  bg-white z-10'>
+            <ProductPriceFilterRow title='가격' priceOptions={priceOptions} />
           </div>
         </div>
       )}
