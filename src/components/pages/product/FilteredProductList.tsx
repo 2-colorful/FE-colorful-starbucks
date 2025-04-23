@@ -1,12 +1,12 @@
 'use client';
 
-import { SearchParamsType } from '@/data/productDummy/productSearchTypes';
 import { PaginatedResponseType } from '@/types/products/productTypes';
 import Loader from '@/components/ui/common/Loader';
 import FilteredProductItemSection from '@/components/layouts/product/FilteredProductSection';
 import BottomScrollLoader from './BottomScrollLoader';
 import SortProducts from '@/components/modules/product/SortProducts';
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll';
+import { SearchParamsType } from '@/data/productDummy/productSearchTypes';
 
 type FilteredProductListProps = {
   params: SearchParamsType;

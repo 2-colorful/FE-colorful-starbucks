@@ -1,31 +1,25 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import type { PaginatedResponseType } from '@/types/products/productTypes';
 import {
   getSearchResults,
-  getSearchResultsByPage,
-  getMoreSearchResults,
+  fetchMoreSearchResults,
 } from '@/actions/search-service';
-import { SearchResponseType } from '@/types/search/requestDataTypes';
+import { SearchParamsType } from '@/types/search/requestDataTypes';
 
-type SearchParams = {
-  keyword?: string;
-  minPrice?: string;
-  maxPrice?: string;
-  page?: string;
-  size?: string;
+type UseSearchInfiniteScrollOptions = {
+  initialData: PaginatedResponseType;
+  params: SearchParamsType;
 };
 
-type UseInfiniteScrollOptions = {
-  initialData: SearchResponseType;
-  params: SearchParams;
-};
-
-export function useInfiniteScroll({
+export function useSearchInfiniteScroll({
   initialData,
   params,
-}: UseInfiniteScrollOptions) {
-  const [products, setProducts] = useState<SearchResponseType[]>([initialData]);
+}: UseSearchInfiniteScrollOptions) {
+  const [products, setProducts] = useState<PaginatedResponseType[]>([
+    initialData,
+  ]);
   const [isLoading, setIsLoading] = useState(false);
   const [hasMore, setHasMore] = useState(initialData?.hasNext || false);
   const [currentCursor, setCurrentCursor] = useState<number>(
@@ -36,7 +30,6 @@ export function useInfiniteScroll({
   const isMountedRef = useRef(true);
   const isLoadingRef = useRef(false);
 
-  // 컴포넌트 언마운트 시 isMountedRef 상태 업데이트
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -44,21 +37,24 @@ export function useInfiniteScroll({
     };
   }, []);
 
-  // 초기 검색 결과 로드
-  const loadInitialProducts = useCallback(async () => {
+  const loadInitialSearchResults = useCallback(async () => {
     if (!isMountedRef.current || isLoadingRef.current) return;
 
     isLoadingRef.current = true;
     setIsLoading(true);
 
     try {
-      const initialProductData = await getSearchResults(params);
+      const initialSearchData = await getSearchResults({
+        ...params,
+        size: 12,
+        page: 0,
+      });
 
       if (isMountedRef.current) {
-        if (initialProductData?.content?.length > 0) {
-          setProducts([initialProductData]);
-          setHasMore(initialProductData.hasNext || false);
-          setCurrentCursor(initialProductData.nextCursor || 0);
+        if (initialSearchData?.content?.length > 0) {
+          setProducts([initialSearchData]);
+          setHasMore(initialSearchData.hasNext || false);
+          setCurrentCursor(initialSearchData.nextCursor || 0);
           setCurrentPage(1);
         } else {
           setProducts([]);
@@ -82,7 +78,7 @@ export function useInfiniteScroll({
   // 초기 데이터 설정 및 업데이트
   useEffect(() => {
     if (!initialData?.content || initialData.content.length === 0) {
-      loadInitialProducts();
+      loadInitialSearchResults();
       return;
     }
 
@@ -90,7 +86,7 @@ export function useInfiniteScroll({
     setHasMore(initialData.hasNext || false);
     setCurrentCursor(initialData.nextCursor || 0);
     setCurrentPage(Number(params.page) || 1);
-  }, [initialData, params.page, loadInitialProducts]);
+  }, [initialData, params.page, loadInitialSearchResults, params]);
 
   // 이전 페이지 로드 함수 (상단 스크롤)
   const loadPreviousPage = useCallback(async () => {
@@ -102,14 +98,17 @@ export function useInfiniteScroll({
 
     try {
       const prevPage = currentPage - 1;
-      const previousData = await getSearchResultsByPage(params, prevPage);
+      const previousData = await getSearchResults({
+        ...params,
+        page: prevPage,
+      });
 
       if (isMountedRef.current && previousData?.content?.length > 0) {
         setProducts((prev) => [previousData, ...prev]);
         setCurrentPage(prevPage);
       }
     } catch (error) {
-      console.error('이전 검색 결과 페이지 로드 오류:', error);
+      console.error('이전 페이지 로드 오류:', error);
     } finally {
       if (isMountedRef.current) {
         setIsLoading(false);
@@ -118,7 +117,6 @@ export function useInfiniteScroll({
     }
   }, [currentPage, params]);
 
-  // 다음 페이지 로드 함수 (하단 스크롤)
   const loadNextPage = useCallback(async () => {
     if (isLoadingRef.current || !hasMore || !isMountedRef.current) return;
 
@@ -126,7 +124,7 @@ export function useInfiniteScroll({
     setIsLoading(true);
 
     try {
-      const nextData = await getMoreSearchResults(params, currentCursor);
+      const nextData = await fetchMoreSearchResults(params, currentCursor);
 
       if (isMountedRef.current) {
         if (nextData?.content?.length > 0) {
@@ -144,7 +142,7 @@ export function useInfiniteScroll({
         }
       }
     } catch (error) {
-      console.error('다음 검색 결과 페이지 로드 오류:', error);
+      console.error('다음 페이지 로드 오류:', error);
       if (isMountedRef.current) {
         setHasMore(false);
       }

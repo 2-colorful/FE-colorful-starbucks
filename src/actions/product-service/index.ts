@@ -117,6 +117,10 @@ export const getProductDetail = async (
   try {
     const response = await instance.get<ProductTypes>(
       `/products/${productCode}`,
+      {
+        requireAuth: false,
+        next: { revalidate: 60 * 60 * 24 },
+      },
     );
 
     return response.data;
@@ -144,7 +148,12 @@ export const getProductSimple = async (
   try {
     const response = await instance.get<SimpleProduct>(
       `/products/${productCode}/simple`,
-      { requireAuth: false, next: { revalidate: 60 * 60 * 24 } },
+      {
+        requireAuth: false,
+        cache: 'force-cache',
+        tags: ['productSimple', `productSimple-${productCode}`],
+        revalidate: 60 * 60 * 24,
+      },
     );
 
     return response.data;

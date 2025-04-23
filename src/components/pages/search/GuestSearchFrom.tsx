@@ -6,14 +6,12 @@ import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Search, X } from 'lucide-react';
 
-import {
-  getAutoCompleteResult,
-  addRecentSearchHistory,
-} from '@/actions/search-service';
+import { getAutoCompleteResult } from '@/actions/search-service';
 import AutoCompleteList from '@/components/ui/search/AutoCompleteList';
 import useDebounce from '@/hooks/useDebounce';
+import { addGuestRecentSearch } from '@/lib/search/util';
 
-export default function SearchForm() {
+export default function GuestSearchForm() {
   const router = useRouter();
   const [inputValue, setInputValue] = useState('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -54,7 +52,7 @@ export default function SearchForm() {
     searchParams.set('query', inputValue);
 
     try {
-      await addRecentSearchHistory(inputValue);
+      addGuestRecentSearch(inputValue);
       router.push(`/result?${searchParams.toString()}`, {
         scroll: false,
       });

@@ -27,3 +27,18 @@ export interface SearchResponseType {
   hasNext: boolean;
   nextCursor: number;
 }
+
+export interface SearchParamsType {
+  query: string;
+  category?: string;
+  cursor?: number;
+  minPrice?: number;
+  maxPrice?: number;
+  size?: number;
+  page?: number;
+}
+
+export interface CategoryCountType {
+  topCategoryName: string;
+  count: number;
+}
