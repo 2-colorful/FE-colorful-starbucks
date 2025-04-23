@@ -1,7 +1,7 @@
 import { getSearchResults, getSearchCounts } from '@/actions/search-service';
 import SearchResultHeader from '@/components/modules/search/SearchResultHeader';
 import SearchResultList from '@/components/modules/search/SearchResultList';
-import { transformSearchParams } from '@/lib/search/util';
+import { transformSearchParams } from '@/lib/search/server-util';
 
 export const dynamic = 'force-dynamic';
 

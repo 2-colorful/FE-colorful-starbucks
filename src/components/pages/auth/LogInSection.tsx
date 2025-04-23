@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 
 import LogInForm from './LogInInForm';
 import { BottomSheet, Button } from '@/components/ui/common';
+import { GUEST_STORAGE_KEY } from '@/lib/search/util';
 
 export default function LogInSection() {
   const [isLoading, setIsLoading] = useState(false);
@@ -19,9 +20,13 @@ export default function LogInSection() {
 
       const hasRecentItems =
         localStorage.getItem('recentlyViewedItems') !== null;
+      const hasGuestSearches = localStorage.getItem(GUEST_STORAGE_KEY) !== null;
 
-      if (hasRecentItems) {
+      if (hasRecentItems || hasGuestSearches) {
         sessionStorage.setItem('needsMigration', 'true');
+        if (hasGuestSearches) {
+          sessionStorage.setItem('needsSearchMigration', 'true');
+        }
       }
 
       await signIn('credentials', {
