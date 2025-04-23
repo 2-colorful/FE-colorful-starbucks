@@ -21,6 +21,7 @@ const buttonVariants = cva(
         ghost: 'text-text-800 hover:bg-gray-300',
         link: 'text-primary-100 underline-offset-4 hover:underline',
         disabled: 'bg-disabled text-text-400 cursor-not-allowed',
+        pending: 'bg-primary-100 text-white cursor-not-allowed',
       },
       size: {
         sm: 'h-10 py-2 text-sm',
@@ -40,6 +41,29 @@ const buttonVariants = cva(
   },
 );
 
+const LoadingSpinner = () => (
+  <svg
+    className='animate-spin -ml-1 mr-2 h-4 w-4 text-current'
+    xmlns='http://www.w3.org/2000/svg'
+    fill='none'
+    viewBox='0 0 24 24'
+  >
+    <circle
+      className='opacity-25'
+      cx='12'
+      cy='12'
+      r='10'
+      stroke='currentColor'
+      strokeWidth='4'
+    ></circle>
+    <path
+      className='opacity-75'
+      fill='currentColor'
+      d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z'
+    ></path>
+  </svg>
+);
+
 function Button({
   className,
   variant,
@@ -47,26 +71,40 @@ function Button({
   size,
   asChild = false,
   disabled,
+  isPending,
+  label,
   style,
+  children,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    isPending?: boolean;
+    label?: string;
   }) {
   const Comp = asChild ? Slot : 'button';
 
-  const buttonVariant = disabled ? 'disabled' : variant;
+  // 버튼 variant 결정 로직 개선
+  let buttonVariant = variant;
+  if (disabled) {
+    buttonVariant = 'disabled';
+  } else if (isPending) {
+    buttonVariant = 'pending';
+  }
 
   return (
     <Comp
       data-slot='button'
       className={cn(
-        buttonVariants({ variant: buttonVariant, width, size, className }), // size 속성 전달
+        buttonVariants({ variant: buttonVariant, width, size, className }),
       )}
-      disabled={disabled}
+      disabled={disabled || isPending}
       style={style}
       {...props}
-    />
+    >
+      {isPending && <LoadingSpinner />}
+      {label || children}
+    </Comp>
   );
 }
 

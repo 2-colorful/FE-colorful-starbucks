@@ -35,6 +35,8 @@ export default function ProductOptionsModal({
   const router = useRouter();
   const { closeModal } = useModalContext();
 
+  const [isPending, setIsPending] = useState(false);
+
   const [selectOptions, setSelectOptions] = useState<SelectOptionsState>({
     colorId: null,
     sizeId: null,
@@ -132,57 +134,79 @@ export default function ProductOptionsModal({
   };
 
   const handleAddToCart = async () => {
-    if (!isOptionComplete) {
-      alert('옵션을 모두 선택해주세요.');
+    if (!isOptionComplete || isPending) {
+      if (!isOptionComplete) {
+        alert('옵션을 모두 선택해주세요.');
+      }
       return;
     }
 
-    const productDetail = await getProductDetailWithOptions(
-      productId,
-      selectOptions.sizeId,
-      selectOptions.colorId,
-    );
+    try {
+      setIsPending(true);
 
-    if (!productDetail) {
-      alert('상품 정보를 찾을 수 없습니다.');
-      return;
+      const productDetail = await getProductDetailWithOptions(
+        productId,
+        selectOptions.sizeId,
+        selectOptions.colorId,
+      );
+
+      if (!productDetail) {
+        alert('상품 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      await addToCart({
+        productCode: productId,
+        productDetailCode: productDetail.productDetailCode,
+        quantity,
+      });
+
+      alert('장바구니에 추가되었습니다.');
+      closeModal();
+    } catch (error) {
+      console.error('장바구니 추가 중 오류:', error);
+      alert('장바구니 추가 중 오류가 발생했습니다.');
+    } finally {
+      setIsPending(false);
     }
-
-    await addToCart({
-      productCode: productId,
-      productDetailCode: productDetail.productDetailCode,
-      quantity,
-    });
-
-    alert('장바구니에 추가되었습니다.');
-    closeModal();
   };
 
   const handlePurchase = async () => {
-    if (!isOptionComplete) {
-      alert('옵션을 모두 선택해주세요.');
+    if (!isOptionComplete || isPending) {
+      if (!isOptionComplete) {
+        alert('옵션을 모두 선택해주세요.');
+      }
       return;
     }
 
-    const productDetail = await getProductDetailWithOptions(
-      productId,
-      selectOptions.sizeId,
-      selectOptions.colorId,
-    );
+    try {
+      setIsPending(true);
 
-    if (!productDetail) {
-      alert('상품 정보를 찾을 수 없습니다.');
-      return;
+      const productDetail = await getProductDetailWithOptions(
+        productId,
+        selectOptions.sizeId,
+        selectOptions.colorId,
+      );
+
+      if (!productDetail) {
+        alert('상품 정보를 찾을 수 없습니다.');
+        return;
+      }
+
+      await addToCart({
+        productCode: productId,
+        productDetailCode: productDetail.productDetailCode,
+        quantity,
+      });
+
+      closeModal();
+      router.push('/cart');
+    } catch (error) {
+      console.error('구매 처리 중 오류:', error);
+      alert('구매 처리 중 오류가 발생했습니다.');
+    } finally {
+      setIsPending(false);
     }
-
-    await addToCart({
-      productCode: productId,
-      productDetailCode: productDetail.productDetailCode,
-      quantity,
-    });
-
-    closeModal();
-    router.push('/cart');
   };
 
   const totalPrice = useMemo(() => {
@@ -221,6 +245,7 @@ export default function ProductOptionsModal({
 
       <ActionButtonSection
         isOptionComplete={isOptionComplete}
+        isPending={isPending}
         onAddToCart={handleAddToCart}
         onPurchase={handlePurchase}
       />
