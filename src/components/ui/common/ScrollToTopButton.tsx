@@ -51,11 +51,11 @@ export default function ScrollToTopButton() {
   if (!isVisible) return null;
 
   return (
-    <div className='z-30 sticky bottom-10 right-0 w-full pointer-events-none'>
+    <div className='z-30 sticky bottom-20  w-full pointer-events-none'>
       <div className='max-w-3xl mx-auto relative'>
         <button
           onClick={scrollToTop}
-          className='absolute bottom-15 right-6 p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto'
+          className='absolute bottom-15 right-5 p-3.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto'
           aria-label='최상단 이동'
         >
           <ScrollToTop

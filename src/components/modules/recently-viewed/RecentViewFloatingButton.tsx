@@ -2,94 +2,95 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect, useState, useContext } from 'react';
+import { usePathname } from 'next/navigation';
 
-import { getRecentlyProducts } from '@/actions/product-service';
 import { SessionContext } from '@/context/SessionContext';
-import { RecentlyViewedProductItem } from '@/types/products/productTypes';
+import { getRecentlyProductThumbnail } from '@/actions/product-service';
+import { getRecentlyViewedProducts } from '@/lib/recently-viewed/utils';
 
 export default function RecentViewFloatingButton() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [recentProducts, setRecentProducts] = useState<
-    RecentlyViewedProductItem[]
-  >([]);
+  const [recentProductThumbnailUrl, setRecentProductThumbnailUrl] =
+    useState('');
   const [loading, setLoading] = useState(true);
   const isLoggedIn = useContext(SessionContext);
+  const pathname = usePathname();
+
+  const hiddenPathList = [
+    '/cart',
+    '/payment',
+    '/recently-viewed',
+    '/my-page',
+    '/orders',
+    '/coupon',
+    '/address',
+    '/search',
+  ];
+
+  const shouldHideButton = hiddenPathList.some(
+    (path) => pathname === path || pathname.startsWith(`${path}`),
+  );
 
   useEffect(() => {
+    if (shouldHideButton) return;
+
     if (isLoggedIn) {
       fetchRecentProducts();
+    } else {
+      fetchLocalRecentProduct();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, pathname, shouldHideButton]);
 
   const fetchRecentProducts = async () => {
     try {
       setLoading(true);
-      const data = await getRecentlyProducts();
-      console.log('API 결과:', data);
-
-      const allProducts = data.flatMap((day) => day.recentlyViewProducts);
-
-      setRecentProducts(allProducts.slice(0, 3));
+      const response = await getRecentlyProductThumbnail();
+      setRecentProductThumbnailUrl(response);
     } catch (error) {
-      console.error('최근 본 상품 로딩 실패:', error);
+      console.error('최근 본 상품 썸네일 로딩 실패:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const toggleOpen = () => {
-    setIsOpen(!isOpen);
+  const fetchLocalRecentProduct = () => {
+    try {
+      setLoading(true);
+      const recentItems = getRecentlyViewedProducts();
+
+      if (recentItems && recentItems.length > 0) {
+        const mostRecentItem = recentItems[0];
+        setRecentProductThumbnailUrl(mostRecentItem.productThumbnailUrl || '');
+      }
+    } catch (error) {
+      console.error('로컬스토리지 최근 본 상품 로딩 실패:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  if (!isLoggedIn || (recentProducts.length === 0 && !loading)) {
+  if ((!recentProductThumbnailUrl && !loading) || shouldHideButton) {
     return null;
   }
 
   return (
-    <div className='fixed bottom-25 right-5 z-50'>
-      {isOpen && (
-        <div className='flex flex-col items-center mb-2 animate-fade-in'>
-          <Link
-            href='/recently-viewed'
-            className='w-10 h-10 rounded-full bg-primary-600 text-white flex items-center justify-center mb-2 shadow-md'
-          >
-            <span className='text-xs'>전체</span>
-          </Link>
-
-          {recentProducts.map((item, index) => (
-            <Link
-              href={`/product/${item.productCode}`}
-              key={`${item.productCode}-${index}`}
-              className='w-10 h-10 rounded-full bg-white border border-gray-200 flex items-center justify-center mb-2 shadow-md overflow-hidden'
-            >
-              <Image
-                src={item.productThumbnailUrl || '/placeholder.svg'}
-                alt='최근 본 상품'
-                width={40}
-                height={40}
-                className='object-cover w-full h-full'
-              />
-            </Link>
-          ))}
-        </div>
-      )}
-
-      <button
-        onClick={toggleOpen}
+    <div className='fixed bottom-20 right-5 z-50'>
+      <Link
+        href='/recently-viewed'
         className='w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center overflow-hidden'
       >
         {loading ? (
           <div className='w-8 h-8 rounded-full bg-gray-200 animate-pulse'></div>
         ) : (
           <Image
-            src={recentProducts[0]?.productThumbnailUrl || '/placeholder.svg'}
+            src={recentProductThumbnailUrl || '/placeholder.svg'}
             alt='최근 본 상품'
             width={40}
             height={40}
-            className='object-cover w-10 h-10'
+            unoptimized={true}
+            className='object-cover w-10 h-10 opacity-70'
           />
         )}
-      </button>
+      </Link>
     </div>
   );
 }
