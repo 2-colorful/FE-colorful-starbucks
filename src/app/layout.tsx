@@ -9,6 +9,8 @@ import ScrollToTopButton from '@/components/ui/common/ScrollToTopButton';
 import { ModalProvider } from '@/context/ModalContext';
 import AuthContextProvider from '@/provider/AuthContextProvider';
 import { options } from './api/auth/[...nextauth]/options';
+import MigrationHandler from '@/components/pages/common/MigrationHandler';
+import { Providers } from '@/provider/Provider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -46,7 +48,10 @@ export default async function RootLayout({
             <MenuProvider>
               <ModalProvider>
                 <Menu />
-                {children}
+                <Providers>
+                  <MigrationHandler />
+                  {children}
+                </Providers>
                 <ScrollToTopButton />
               </ModalProvider>
             </MenuProvider>

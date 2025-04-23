@@ -30,7 +30,7 @@ const withOutAuth = async (
   }
 };
 
-const withAuthList = [routes.cart, routes.mypage, routes.cart];
+const withAuthList = [routes.cart, routes.mypage, routes.cart, routes.address];
 const withOutAuthList = [routes.signIn];
 
 export default async function middleware(request: NextRequest) {
@@ -44,6 +44,24 @@ export default async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const isWithAuth = withAuthList.includes(pathname);
   const isWithOutAuth = withOutAuthList.includes(pathname);
+
+  if (pathname === '/recently-viewed') {
+    if (!accessToken) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/recently-viewed-local';
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
+  }
+
+  if (pathname === '/recently-viewed-local') {
+    if (accessToken) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/recently-viewed';
+      return NextResponse.redirect(url);
+    }
+    return NextResponse.next();
+  }
 
   if (isWithAuth) return withAuth(request, !!accessToken);
   else if (isWithOutAuth)

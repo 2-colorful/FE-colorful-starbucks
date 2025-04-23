@@ -1,13 +1,14 @@
 'use server';
 
 import { z } from 'zod';
+import { getServerSession } from 'next-auth';
+import { cookies } from 'next/headers';
 
 import { signInDataType } from '@/types/responseDataTypes';
 import { instance } from '../instance';
 import { ApiResponse } from '@/types/common';
 import { SignUpRequestData } from '@/types/auth';
 import { options } from '@/app/api/auth/[...nextauth]/options';
-import { getServerSession } from 'next-auth';
 
 export const signInRequest = async (credentials: {
   email: string;
@@ -141,5 +142,35 @@ export async function isUserLoggedIn(): Promise<boolean> {
   } catch (error) {
     console.error('세션 확인 중 오류 발생:', error);
     return false;
+  }
+}
+
+export async function signOut() {
+  try {
+    const session = await getServerSession(options);
+    const refreshToken = session?.user?.refreshToken;
+
+    if (!refreshToken) {
+      throw new Error('리프레시 토큰을 찾을 수 없습니다.');
+    }
+
+    const response = await instance.delete('/auth/sign-out', {
+      body: JSON.stringify({
+        refreshToken,
+      }),
+      requireAuth: true,
+    });
+
+    const cookieStore = await cookies();
+    cookieStore.delete('next-auth.session-token');
+    cookieStore.delete('next-auth.csrf-token');
+    cookieStore.delete('next-auth.callback-url');
+
+    cookieStore.delete('refresh-token');
+
+    return response.data;
+  } catch (error) {
+    console.error('로그아웃 오류:', error);
+    throw error;
   }
 }
