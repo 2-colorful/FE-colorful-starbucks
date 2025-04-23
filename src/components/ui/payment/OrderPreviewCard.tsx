@@ -23,6 +23,7 @@ export default async function OrderPreviewCard({
       <Image
         src={product.productThumbnailUrl}
         alt={product.productName}
+        unoptimized={true}
         width={80}
         height={80}
         priority

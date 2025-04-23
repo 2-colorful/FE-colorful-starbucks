@@ -49,6 +49,7 @@ export default async function OrderDetailCard({
       <Image
         src={product.productThumbnailUrl}
         alt={product.productName}
+        unoptimized={true}
         width={50}
         height={50}
         priority
