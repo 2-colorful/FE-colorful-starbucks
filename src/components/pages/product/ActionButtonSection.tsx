@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/common';
 
 type ActionButtonSectionProps = {
   isOptionComplete: boolean;
+  isPending: boolean;
   onAddToCart: () => void;
   onPurchase: () => void;
 };
 
 export default function ActionButtonSection({
   isOptionComplete,
+  isPending,
   onAddToCart,
   onPurchase,
 }: ActionButtonSectionProps) {
@@ -18,20 +20,20 @@ export default function ActionButtonSection({
     <div className='flex items-center gap-3'>
       <button
         onClick={onAddToCart}
-        disabled={!isOptionComplete}
-        className={`flex-shrink-0 cursor-pointer ${!isOptionComplete ? 'opacity-50 pointer-events-none' : ''}`}
+        disabled={!isOptionComplete || isPending}
+        className={`flex-shrink-0 cursor-pointer ${!isOptionComplete || isPending ? 'opacity-50 pointer-events-none' : ''}`}
         aria-label='장바구니에 추가'
       >
         <CartIcon />
       </button>
       <Button
         type='button'
-        disabled={!isOptionComplete}
+        variant={isPending ? 'disabled' : 'default'}
         className='flex-grow'
+        disabled={!isOptionComplete || isPending}
+        label={isPending ? '처리 중...' : '구매하기'}
         onClick={onPurchase}
-      >
-        구매하기
-      </Button>
+      />
     </div>
   );
 }

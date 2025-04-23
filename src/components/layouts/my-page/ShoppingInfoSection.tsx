@@ -19,7 +19,7 @@ export default function ShoppingInfoSection() {
         <ShoppingInfoItem
           icon={<ShoppingBag className='w-6 h-6 text-gray-600' />}
           title='주문내역'
-          href='/my-page/orders'
+          href='/orders'
         />
 
         <ShoppingInfoItem
@@ -31,13 +31,13 @@ export default function ShoppingInfoSection() {
         <ShoppingInfoItem
           icon={<Gift className='w-6 h-6 text-gray-600' />}
           title='찜한상품'
-          href='/my-page/wishlist'
+          href='/wishlist'
         />
 
         <ShoppingInfoItem
           icon={<Ticket className='w-6 h-6 text-gray-600' />}
           title='쿠폰'
-          href='/my-page/coupons'
+          href='/coupon'
         />
 
         <ShoppingInfoItem

@@ -11,6 +11,7 @@ import AuthContextProvider from '@/provider/AuthContextProvider';
 import { options } from './api/auth/[...nextauth]/options';
 import MigrationHandler from '@/components/pages/common/MigrationHandler';
 import { Providers } from '@/provider/Provider';
+import RecentViewFloatingButton from '@/components/modules/recently-viewed/RecentViewFloatingButton';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -52,6 +53,7 @@ export default async function RootLayout({
                   <MigrationHandler />
                   {children}
                 </Providers>
+                <RecentViewFloatingButton />
                 <ScrollToTopButton />
               </ModalProvider>
             </MenuProvider>

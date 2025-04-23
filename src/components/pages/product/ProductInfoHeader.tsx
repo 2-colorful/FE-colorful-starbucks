@@ -32,6 +32,7 @@ export default function ProductInfoHeader({
             src={productThumbnailUrl}
             alt={productName}
             fill
+            unoptimized={true}
             className='object-cover'
             sizes='64px'
           />
