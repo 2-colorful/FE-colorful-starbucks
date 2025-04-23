@@ -40,10 +40,13 @@ export async function clearAllRecentSearchHistory() {
 
 export async function removeRecentSearchHistory(keyword: string) {
   try {
-    await instance.delete(`/users/recently-search/${keyword}`, {
+    const encodedKeyword = encodeURIComponent(keyword);
+
+    await instance.delete(`/users/recently-search/${encodedKeyword}`, {
       requireAuth: true,
     });
   } catch (error) {
+    console.error('검색어 삭제 실패:', error);
     throw error;
   }
 }
