@@ -245,11 +245,11 @@ export async function deleteAllRecentProducts() {
 }
 
 export const getProudctDetailData = async (
-  productCode: number,
+  productDetailCode: number,
 ): Promise<ProductDetailDataType> => {
   try {
     const res = await instance.get<ProductDetailDataType>(
-      `/product-details/${productCode}`,
+      `/product-details/${productDetailCode}`,
       {
         requireAuth: false,
       },

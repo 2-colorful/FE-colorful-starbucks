@@ -49,7 +49,6 @@ export default function CreateAddressForm({
 
   const isFormValid = () => {
     const result = createAddressSchema.safeParse(formData);
-    console.log('🚀 ~ isFormValid ~ result:', result);
     return result.success;
   };
 
