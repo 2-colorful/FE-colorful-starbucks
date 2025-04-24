@@ -8,7 +8,7 @@ export default function PageMainHeaderLayout({
   return (
     <>
       <PageMSubHeader />
-      {children}
+      <div className='pt-14'>{children}</div>
     </>
   );
 }
