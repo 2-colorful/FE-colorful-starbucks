@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useState, useMemo } from 'react';
 import { throttle } from 'lodash';
+import { usePathname } from 'next/navigation';
 
 import ScrollToTop from '@/assets/icons/common/scrollToTop.svg';
 
@@ -8,6 +9,21 @@ const THROTTLE_WAIT = 300;
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
+  const pathname = usePathname();
+
+  const hiddenPathList = [
+    '/cart',
+    '/payment',
+    '/my-page',
+    '/orders',
+    '/coupon',
+    '/address',
+    '/search',
+  ];
+
+  const shouldHideButton = hiddenPathList.some(
+    (path) => pathname === path || pathname.startsWith(`${path}`),
+  );
 
   const handleScroll = useMemo(
     () =>
@@ -21,6 +37,11 @@ export default function ScrollToTopButton() {
   );
 
   useEffect(() => {
+    if (shouldHideButton) {
+      setIsVisible(false);
+      return;
+    }
+
     const scrollContainer = document.querySelector('.overflow-y-scroll');
     if (!scrollContainer) return;
 
@@ -32,7 +53,7 @@ export default function ScrollToTopButton() {
       scrollContainer.removeEventListener('scroll', handleScroll);
       handleScroll.cancel();
     };
-  }, [handleScroll]);
+  }, [handleScroll, shouldHideButton, pathname]);
 
   const scrollToTop = () => {
     const scrollContainer = document.querySelector('.overflow-y-scroll');
@@ -48,10 +69,10 @@ export default function ScrollToTopButton() {
     }, 15);
   };
 
-  if (!isVisible) return null;
+  if (!isVisible || shouldHideButton) return null;
 
   return (
-    <div className='z-30 sticky bottom-20  w-full pointer-events-none'>
+    <div className='z-30 sticky bottom-21 w-full pointer-events-none'>
       <div className='max-w-3xl mx-auto relative'>
         <button
           onClick={scrollToTop}
