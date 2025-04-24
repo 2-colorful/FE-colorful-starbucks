@@ -12,6 +12,7 @@ import {
 } from '@/actions/search-service';
 import AutoCompleteList from '@/components/ui/search/AutoCompleteList';
 import useDebounce from '@/hooks/useDebounce';
+import Prev from '@/components/layouts/Header/Prev';
 
 export default function SearchForm() {
   const router = useRouter();
@@ -145,6 +146,7 @@ export default function SearchForm() {
       onSubmit={handleSubmitSearch}
       className='flex justify-between gap-2 px-6 py-3 shadow-[0_2px_6px_rgba(0,0,0,0.1)] relative'
     >
+      <Prev />
       <div
         ref={suggestionsRef}
         className={`grid grid-cols-[1fr_auto_auto] items-center w-full bg-[#F7F7F7] placeholder-text-[#d9d9d9] text-[13px] font-semibold px-2 rounded-sm relative`}
@@ -200,9 +202,7 @@ export default function SearchForm() {
         type='button'
         className='w-fit cursor-pointer'
         aria-label='닫기'
-      >
-        <X width={24} height={24} className='text-gray-900' />
-      </button>
+      ></button>
     </form>
   );
 }
