@@ -307,8 +307,14 @@ export const getRecentlyProductThumbnail = async () => {
         requireAuth: true,
       },
     );
-    return response.data.productThumbnailUrl;
+
+    if (response && response.data && response.data.productThumbnailUrl) {
+      return response.data.productThumbnailUrl;
+    }
+
+    return '';
   } catch (error) {
-    throw error;
+    console.error('최근 본 상품 썸네일 조회 실패:', error);
+    return '';
   }
 };
