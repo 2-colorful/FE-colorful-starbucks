@@ -25,6 +25,8 @@ export default function RecentViewFloatingButton() {
     '/coupon',
     '/address',
     '/search',
+    '/sign',
+    '/pay',
   ];
 
   const shouldHideButton = hiddenPathList.some(
