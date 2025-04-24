@@ -98,7 +98,7 @@ export default function RecentViewFloatingButton() {
       <div className='max-w-3xl mx-auto relative'>
         <Link
           href='/recently-viewed'
-          className='absolute bottom-15 right-5 w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center overflow-hidden pointer-events-auto'
+          className='absolute bottom-15 right-5 w-12 h-12 rounded-full bg-white shadow-lg  flex items-center justify-center overflow-hidden pointer-events-auto'
         >
           {loading ? (
             <div className='w-8 h-8 rounded-full bg-gray-200 animate-pulse'></div>
