@@ -1,9 +1,11 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getProduct } from '@/actions/product-service';
+
 import RecentProductSkeleton from '@/components/modules/product/RecentProductSkeleton';
 import {
   LOCAL_STORAGE_KEY,
@@ -20,7 +22,7 @@ interface ProductData {
 interface ProductItemCardLocalProps {
   productCode: number;
   productThumbnailUrl?: string;
-  onDelete?: (productCode: number) => void; // 삭제 콜백 추가
+  onDelete?: (productCode: number) => void;
 }
 
 export default function ProductItemCardLocal({
@@ -31,7 +33,7 @@ export default function ProductItemCardLocal({
   const [product, setProduct] = useState<ProductData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [isDeleted, setIsDeleted] = useState(false); // 삭제 상태 추가
+  const [isDeleted, setIsDeleted] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -56,7 +58,8 @@ export default function ProductItemCardLocal({
     fetchProductData();
   }, [productCode, productThumbnailUrl]);
 
-  const handleDelete = () => {
+  const handleDelete = (e: React.MouseEvent) => {
+    e.stopPropagation(); // 이벤트 버블링 방지
     try {
       const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
       if (storedItems) {
@@ -66,15 +69,12 @@ export default function ProductItemCardLocal({
         );
         localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedItems));
 
-        // 로컬 상태 업데이트로 UI에서 즉시 사라지게 함
         setIsDeleted(true);
 
-        // 부모 컴포넌트에 삭제 이벤트 알림
         if (onDelete) {
           onDelete(productCode);
         }
 
-        // 백그라운드에서 페이지 데이터 리프레시
         router.refresh();
       }
     } catch (error) {
@@ -82,7 +82,6 @@ export default function ProductItemCardLocal({
     }
   };
 
-  // 삭제된 상태면 아무것도 렌더링하지 않음
   if (isDeleted) {
     return null;
   }
@@ -97,23 +96,28 @@ export default function ProductItemCardLocal({
 
   return (
     <article className='flex items-center py-4'>
-      <div className='w-16 h-16 rounded-md overflow-hidden mr-4 flex-shrink-0'>
-        <Image
-          src={product.productThumbnailUrl || '/placeholder.svg'}
-          alt={product.productName || '상품 이미지'}
-          unoptimized={true}
-          height={64}
-          width={64}
-          className='w-full h-full object-cover'
-        />
-      </div>
+      <Link
+        href={`/product/${product.productCode}`}
+        className='flex items-center flex-1'
+      >
+        <div className='w-16 h-16 rounded-md overflow-hidden mr-4 flex-shrink-0'>
+          <Image
+            src={product.productThumbnailUrl || '/placeholder.svg'}
+            alt={product.productName || '상품 이미지'}
+            unoptimized={true}
+            height={64}
+            width={64}
+            className='w-full h-full object-cover'
+          />
+        </div>
 
-      <div className='flex-1'>
-        <h3 className='text-sm text-gray-800 mb-1'>{product.productName}</h3>
-        <p className='text-base font-semibold'>
-          {product.price.toLocaleString()}원
-        </p>
-      </div>
+        <div className='flex-1'>
+          <h3 className='text-sm text-gray-800 mb-1'>{product.productName}</h3>
+          <p className='text-base font-semibold'>
+            {product.price.toLocaleString()}원
+          </p>
+        </div>
+      </Link>
 
       <div className='ml-2'>
         <button

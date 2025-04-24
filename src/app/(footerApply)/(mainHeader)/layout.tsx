@@ -9,7 +9,7 @@ export default function MainHeaderLayout({
   return (
     <>
       <MainHeader />
-      <main className=''>{children}</main>
+      <main className='pt-14'>{children}</main>
       <Nav />
     </>
   );
