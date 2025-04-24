@@ -12,6 +12,7 @@ export default function RecentViewFloatingButton() {
   const [recentProductThumbnailUrl, setRecentProductThumbnailUrl] =
     useState('');
   const [loading, setLoading] = useState(true);
+  const [hasRecentProduct, setHasRecentProduct] = useState(false);
   const isLoggedIn = useContext(SessionContext);
   const pathname = usePathname();
 
@@ -24,6 +25,8 @@ export default function RecentViewFloatingButton() {
     '/coupon',
     '/address',
     '/search',
+    '/sign',
+    '/pay',
   ];
 
   const shouldHideButton = hiddenPathList.some(
@@ -31,7 +34,10 @@ export default function RecentViewFloatingButton() {
   );
 
   useEffect(() => {
-    if (shouldHideButton) return;
+    if (shouldHideButton) {
+      setLoading(false);
+      return;
+    }
 
     if (isLoggedIn) {
       fetchRecentProducts();
@@ -44,9 +50,16 @@ export default function RecentViewFloatingButton() {
     try {
       setLoading(true);
       const response = await getRecentlyProductThumbnail();
-      setRecentProductThumbnailUrl(response);
+
+      if (response && response.trim() !== '') {
+        setRecentProductThumbnailUrl(response);
+        setHasRecentProduct(true);
+      } else {
+        setHasRecentProduct(false);
+      }
     } catch (error) {
       console.error('최근 본 상품 썸네일 로딩 실패:', error);
+      setHasRecentProduct(false);
     } finally {
       setLoading(false);
     }
@@ -59,37 +72,49 @@ export default function RecentViewFloatingButton() {
 
       if (recentItems && recentItems.length > 0) {
         const mostRecentItem = recentItems[0];
-        setRecentProductThumbnailUrl(mostRecentItem.productThumbnailUrl || '');
+        const thumbnailUrl = mostRecentItem.productThumbnailUrl || '';
+
+        if (thumbnailUrl.trim() !== '') {
+          setRecentProductThumbnailUrl(thumbnailUrl);
+          setHasRecentProduct(true);
+        } else {
+          setHasRecentProduct(false);
+        }
+      } else {
+        setHasRecentProduct(false);
       }
     } catch (error) {
       console.error('로컬스토리지 최근 본 상품 로딩 실패:', error);
+      setHasRecentProduct(false);
     } finally {
       setLoading(false);
     }
   };
 
-  if ((!recentProductThumbnailUrl && !loading) || shouldHideButton) {
+  if ((!hasRecentProduct && !loading) || shouldHideButton) {
     return null;
   }
 
   return (
-    <div className='fixed bottom-20 right-5 z-50'>
-      <Link
-        href='/recently-viewed'
-        className='w-12 h-12 rounded-full bg-white shadow-lg border border-gray-200 flex items-center justify-center overflow-hidden'
-      >
-        {loading ? (
-          <div className='w-8 h-8 rounded-full bg-gray-200 animate-pulse'></div>
-        ) : (
-          <Image
-            src={recentProductThumbnailUrl || '/placeholder.svg'}
-            alt='최근 본 상품'
-            width={40}
-            height={40}
-            className='object-cover w-10 h-10 opacity-70'
-          />
-        )}
-      </Link>
+    <div className='z-30 sticky bottom-7 w-full pointer-events-none'>
+      <div className='max-w-3xl mx-auto relative'>
+        <Link
+          href='/recently-viewed'
+          className='absolute bottom-15 right-5 w-12 h-12 rounded-full bg-white shadow-lg  flex items-center justify-center overflow-hidden pointer-events-auto'
+        >
+          {loading ? (
+            <div className='w-8 h-8 rounded-full bg-gray-200 animate-pulse'></div>
+          ) : (
+            <Image
+              src={recentProductThumbnailUrl || '/placeholder.svg'}
+              alt='최근 본 상품'
+              width={48}
+              height={48}
+              className='object-cover w-full h-full opacity-70'
+            />
+          )}
+        </Link>
+      </div>
     </div>
   );
 }
