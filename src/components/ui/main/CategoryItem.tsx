@@ -11,7 +11,6 @@ export default function CategoryItem({ title, icon }: CategoryItemProps) {
       <Image
         src={icon}
         alt={title}
-        unoptimized={true}
         className='mx-auto object-cover'
         fill
         sizes='100vW'

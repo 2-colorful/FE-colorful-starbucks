@@ -51,7 +51,6 @@ export default function FilteredProductItemCard({
         <Image
           src={product.productThumbnailUrl}
           alt={product.productName}
-          unoptimized={true}
           className='rounded-[4px]'
           fill
           sizes='100%'

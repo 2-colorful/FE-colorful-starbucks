@@ -28,7 +28,6 @@ function MainBanner({ events }: { events: EventResponseType[] }) {
                 src={event.thumbnailUrl || '/placeholder.svg'}
                 alt={`Banner ${event.eventUuid}`}
                 fill
-                unoptimized={true}
                 style={{ objectFit: 'cover' }}
                 priority
               />

@@ -35,7 +35,6 @@ export default function MenuNav() {
                 <Image
                   src={icon}
                   alt={`${title} 카테고리 썸네일 이미지`}
-                  unoptimized={true}
                   sizes='100%'
                   fill
                   className='rounded-full object-cover'
