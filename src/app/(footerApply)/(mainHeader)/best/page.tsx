@@ -16,7 +16,7 @@ export default async function BestProductsPage({
   searchParams: Promise<BestSearchParamsType>;
 }) {
   const params = await searchParams;
-  const topCategoryId = params.topCategoryId || '0';
+  const topCategoryId = params.topCategoryId || '17';
 
   const [topCategories, products] = await Promise.all([
     getBestProductsCategories(),

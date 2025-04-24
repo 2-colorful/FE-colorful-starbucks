@@ -9,7 +9,7 @@ export default function BestProductList({
 }) {
   return (
     <section className='padded ml-4 mr-4 flex justify-center flex-col'>
-      <ul>
+      <ul className='w-full grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 pb-10'>
         {products.map((product) => (
           <BestItemCard
             key={product.ranking}

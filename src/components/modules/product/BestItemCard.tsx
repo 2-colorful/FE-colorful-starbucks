@@ -1,3 +1,4 @@
+'use client';
 import { getProductSimple } from '@/actions/product-service';
 import Tag from '@/components/ui/main/Tag';
 import { SimpleProduct } from '@/types/products/productTypes';
@@ -40,10 +41,9 @@ export default function BestItemCard({
     return <></>;
   }
 
-  if (!product) return null; // 올바른 null 반환
-
+  if (!product) return null;
   return (
-    <div className='w-full'>
+    <div className='w-full mt-3'>
       <button
         onClick={ClickToProductDetailPage}
         className='relative aspect-square w-full mb-2'
