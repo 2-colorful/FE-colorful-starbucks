@@ -58,10 +58,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 기존 애플리케이션 디렉토리 제거 (선택적)
             sudo rm -rf /home/ubuntu/colorful-starbucks-frontend
 
-            # Docker가 설치되어 있는지 확인하고, 없으면 설치
             if [ ! -x "$(command -v docker)" ]; then
               sudo apt-get update
               sudo apt-get install -y docker.io
@@ -75,27 +73,21 @@ jobs:
               sudo chmod +x /usr/local/bin/docker-compose
             fi
 
-            # ECR 로그인
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
 
-            # 최신 이미지 가져오기
             docker pull ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.FRONTEND_ECR_REPOSITORY }}:latest
 
-            # app-network 네트워크가 존재하는지 확인하고 없으면 생성
             docker network inspect app-network >/dev/null 2>&1 || docker network create app-network
 
-            # 기존 컨테이너 중지 및 제거
             CONTAINER_ID=$(docker ps -q --filter "name=${{ secrets.FRONTEND_ECR_REPOSITORY }}")
             if [ ! -z "$CONTAINER_ID" ]; then
               docker stop $CONTAINER_ID
               docker rm $CONTAINER_ID
             fi
 
-            # 새 컨테이너 실행
             docker run --name ${{ secrets.FRONTEND_ECR_REPOSITORY }} -d -p 3000:3000 \
               --network app-network \
               -e TZ=Asia/Seoul \
               ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.FRONTEND_ECR_REPOSITORY }}:latest
 
-            # 오래된 이미지 정리 (24시간 이상 된 이미지)
             docker image prune -a --filter "until=24h" --force

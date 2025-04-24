@@ -22,7 +22,6 @@ export default function ProductImage({
       <Image
         src={imageUrl}
         alt={name}
-        unoptimized={true}
         fill
         className={`absolute inset-0 object-${objectFit} ${className}`}
         priority={priority}

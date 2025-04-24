@@ -13,7 +13,6 @@ export default function ProductDetailImage({
         <Image
           src={imageUrl}
           alt={name || '상품 이미지'}
-          unoptimized={true}
           fill
           className='object-contain'
           priority

@@ -86,7 +86,6 @@ export default function RecentViewFloatingButton() {
             alt='최근 본 상품'
             width={40}
             height={40}
-            unoptimized={true}
             className='object-cover w-10 h-10 opacity-70'
           />
         )}

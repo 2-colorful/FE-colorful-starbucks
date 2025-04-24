@@ -21,7 +21,6 @@ export default async function EventProductItem({
           <Image
             src={product.productThumbnailUrl}
             alt={product.productName}
-            unoptimized={true}
             className='rounded-[4px]'
             fill
             sizes='100%'
