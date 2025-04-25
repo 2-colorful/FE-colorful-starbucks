@@ -26,20 +26,19 @@ export default async function AddressPage() {
       <DeliveryAddressList deliveryAddressDatas={deliveryAddressDatas} />
 
       <BottomSheet>
-        <Button
-          variant={'default'}
-          disabled={deliveryAddressDatas.length >= 5}
-          width={'auto'}
-          className={cn(
-            'w-full',
-            deliveryAddressDatas.length >= 5 ? 'pointer-events-none' : '',
-          )}
-          asChild
-        >
-          <Link href={'/address/create'}>
+        <Link href={'/address/create'}>
+          <Button
+            variant={'default'}
+            disabled={deliveryAddressDatas.length >= 5}
+            width={'auto'}
+            className={cn(
+              'w-full',
+              deliveryAddressDatas.length >= 5 ? 'pointer-events-none' : '',
+            )}
+          >
             <IconPlus width={12} height={12} /> 새 배송지 추가
-          </Link>
-        </Button>
+          </Button>
+        </Link>
       </BottomSheet>
     </main>
   );
