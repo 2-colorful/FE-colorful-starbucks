@@ -63,24 +63,6 @@ export default async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  if (pathname === '/recently-viewed') {
-    if (!accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/recently-viewed-local';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
-  if (pathname === '/recently-viewed-local') {
-    if (accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/recently-viewed';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
   if (isWithAuth) return withAuth(request, !!accessToken);
   else if (isWithOutAuth)
     return withOutAuth(request, !!accessToken, callbackUrl);
