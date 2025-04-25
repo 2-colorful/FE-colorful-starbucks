@@ -3,6 +3,7 @@ import RecentProductList from '@/components/pages/product/RecentProductList';
 import DeleteAllRecentViewedProductButton from '@/components/modules/product/DeleteAllRecentViewedProductButton';
 import { isUserLoggedIn } from '@/actions/auth-service';
 import ClientRecentlyViewedWrapper from '@/components/modules/recently-viewed/ClientRecentlyViewedWrapper';
+export const dynamic = 'force-dynamic';
 
 export default async function RecentlyViewedPage() {
   const isLoggedIn = await isUserLoggedIn();
