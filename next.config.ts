@@ -20,6 +20,11 @@ const nextConfig: NextConfig = {
         hostname: 'image.istarbucks.co.kr',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'colorful-starbucks.s3.ap-northeast-2.amazonaws.com',
+        pathname: '/**',
+      },
     ],
   },
 };
