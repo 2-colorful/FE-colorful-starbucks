@@ -23,7 +23,7 @@ function MainBanner({ events }: { events: EventResponseType[] }) {
       {events.map((event) => (
         <SwiperSlide key={event.eventUuid}>
           <Link href={`/events?eventId=${event.eventUuid}`} className='block'>
-            <div className='relative h-[400px] md:h-[450px] lg:h-[500px]'>
+            <div className='relative w-full aspect-[1125/465]'>
               <Image
                 src={event.thumbnailUrl || '/placeholder.svg'}
                 alt={`Banner ${event.eventUuid}`}

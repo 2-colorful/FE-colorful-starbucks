@@ -2,7 +2,7 @@ name: Build and Deploy to EC2
 
 on:
   push:
-    branches: [main, dev]
+    branches: [main, dev, fix/main-page-event-section]
 
 permissions:
   id-token: write
