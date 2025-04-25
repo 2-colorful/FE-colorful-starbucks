@@ -1,6 +1,6 @@
 'use client';
+import { useState, useEffect } from 'react';
 
-import { useState } from 'react';
 import { SubTitle, Body } from '@/components/ui/common';
 import RecentSearchItem from '@/components/ui/search/RecentSearchItem';
 import SearchSection from '@/components/ui/search/SearchSection';
@@ -11,23 +11,46 @@ import {
 import type { RecentSearchType } from '@/types/search/recentSearchTypes';
 
 interface RecentSearchListProps {
-  initialRecentSearches?: RecentSearchType[]; // optional로 변경
+  initialRecentSearches?: RecentSearchType[];
+  isGuest?: boolean;
+  onClearAll?: () => void;
+  onRemoveItem?: (keyword: string) => void;
 }
 
 export default function RecentSearchList({
-  initialRecentSearches,
+  initialRecentSearches = [],
+  isGuest = false,
+  onClearAll,
+  onRemoveItem,
 }: RecentSearchListProps) {
   const [recentSearches, setRecentSearches] = useState<RecentSearchType[]>(
-    initialRecentSearches || [],
+    initialRecentSearches,
   );
 
-  const handleClearAll = async () => {
-    await clearAllRecentSearchHistory();
+  useEffect(() => {
+    setRecentSearches(initialRecentSearches);
+  }, [initialRecentSearches]);
+
+  const handleClearAll = async (): Promise<void> => {
+    if (isGuest) {
+      if (onClearAll) {
+        onClearAll();
+      }
+    } else {
+      await clearAllRecentSearchHistory();
+    }
     setRecentSearches([]);
   };
 
-  const handleRemoveItem = async (keyword: string) => {
-    await removeRecentSearchHistory(keyword);
+  const handleRemoveItem = async (keyword: string): Promise<void> => {
+    if (isGuest) {
+      if (onRemoveItem) {
+        onRemoveItem(keyword);
+      }
+    } else {
+      await removeRecentSearchHistory(keyword);
+    }
+
     setRecentSearches((prev) =>
       prev.filter((item) => item.keyword !== keyword),
     );
@@ -37,6 +60,11 @@ export default function RecentSearchList({
     return (
       <SearchSection className='flex flex-col justify-center h-full'>
         <Body className='text-black text-center'>최근 검색어가 없습니다.</Body>
+        {isGuest && (
+          <Body className='text-gray-500 text-center text-sm mt-2'>
+            로그인하면 검색어가 계정에 저장됩니다.
+          </Body>
+        )}
       </SearchSection>
     );
   }
@@ -62,6 +90,12 @@ export default function RecentSearchList({
           />
         ))}
       </ul>
+
+      {isGuest && (
+        <p className='text-gray-500 text-center text-sm mt-4'>
+          로그인하면 검색어가 계정에 저장됩니다.
+        </p>
+      )}
     </SearchSection>
   );
 }
