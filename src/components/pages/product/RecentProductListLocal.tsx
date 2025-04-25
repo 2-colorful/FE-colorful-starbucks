@@ -7,24 +7,22 @@ import ProductItemCardLocal from '@/components/ui/common/product/ProductItemCard
 
 interface RecentProductListLocalProps {
   recentProducts: DailyRecentlyViewedProductsType[];
+  onDeleteProduct?: (productCode: number) => void;
 }
 
 export default function RecentProductListLocal({
   recentProducts: initialRecentProducts,
+  onDeleteProduct,
 }: RecentProductListLocalProps) {
-  // 로컬 상태로 관리하여 변경 사항을 즉시 반영
   const [recentProducts, setRecentProducts] = useState<
     DailyRecentlyViewedProductsType[]
   >(initialRecentProducts);
 
-  // props가 변경되면 상태 업데이트
   useEffect(() => {
     setRecentProducts(initialRecentProducts);
   }, [initialRecentProducts]);
 
-  // 개별 제품 삭제 처리
   const handleDeleteProduct = (productCode: number) => {
-    // 날짜별 그룹에서 해당 상품 제거 후 빈 그룹은 제거
     const updatedProducts = recentProducts
       .map((group) => ({
         ...group,
@@ -35,9 +33,12 @@ export default function RecentProductListLocal({
       .filter((group) => group.recentlyViewProducts.length > 0);
 
     setRecentProducts(updatedProducts);
+
+    if (onDeleteProduct) {
+      onDeleteProduct(productCode);
+    }
   };
 
-  // 날짜별 그룹이 없으면 빈 화면 표시
   if (recentProducts.length === 0) {
     return (
       <div className='flex flex-col items-center justify-center h-60 mt-50 mb-50'>
