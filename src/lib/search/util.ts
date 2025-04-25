@@ -2,9 +2,10 @@
 
 import { addRecentSearchHistory } from '@/actions/search-service';
 import type { RecentSearchType } from '@/types/search/recentSearchTypes';
+import type React from 'react';
 
 export const GUEST_STORAGE_KEY = 'guestRecentSearches';
-const MAX_RECENT_SEARCHES = 10;
+export const MAX_RECENT_SEARCHES = 10;
 
 export const addGuestRecentSearch = (keyword: string): void => {
   if (typeof window === 'undefined') return;
@@ -34,7 +35,7 @@ export const addGuestRecentSearch = (keyword: string): void => {
   }
 };
 
-export const getGuestRecentSearchHistory = (): RecentSearchType[] => {
+export const getGuestRecentSearches = (): RecentSearchType[] => {
   if (typeof window === 'undefined') return [];
 
   try {
@@ -46,12 +47,14 @@ export const getGuestRecentSearchHistory = (): RecentSearchType[] => {
   }
 };
 
-export const removeGuestRecentSearchHistory = (keyword: string): void => {
-  if (typeof window === 'undefined') return;
+export const removeGuestRecentSearch = (
+  keyword: string,
+): RecentSearchType[] => {
+  if (typeof window === 'undefined') return [];
 
   try {
     const savedSearches = localStorage.getItem(GUEST_STORAGE_KEY);
-    if (!savedSearches) return;
+    if (!savedSearches) return [];
 
     const recentSearches: RecentSearchType[] = JSON.parse(savedSearches);
     const updatedSearches = recentSearches.filter(
@@ -59,12 +62,14 @@ export const removeGuestRecentSearchHistory = (keyword: string): void => {
     );
 
     localStorage.setItem(GUEST_STORAGE_KEY, JSON.stringify(updatedSearches));
+    return updatedSearches;
   } catch (error) {
     console.error('로컬 스토리지에서 검색어 삭제 실패:', error);
+    return [];
   }
 };
 
-export const clearAllGuestRecentSearchHistory = (): void => {
+export const clearGuestRecentSearches = (): void => {
   if (typeof window === 'undefined') return;
 
   try {
@@ -110,5 +115,51 @@ export const migrateGuestSearchesToDB = async (): Promise<boolean> => {
   } catch (error) {
     console.error('최근 검색어 데이터 이관 실패:', error);
     return false;
+  }
+};
+
+export const handleSuggestionKeyDown = (
+  e: React.KeyboardEvent<HTMLInputElement>,
+  suggestions: string[],
+  highlightedIndex: number,
+  setHighlightedIndex: (value: React.SetStateAction<number>) => void,
+  handleSelectSuggestion: (suggestion: string) => void,
+  inputRef: React.RefObject<HTMLInputElement | null>,
+): void => {
+  if (!suggestions.length) return;
+
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    setHighlightedIndex((prev: number) =>
+      prev < suggestions.length - 1 ? prev + 1 : prev,
+    );
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    setHighlightedIndex((prev: number) => (prev > 0 ? prev - 1 : 0));
+  } else if (e.key === 'Enter' && highlightedIndex >= 0) {
+    e.preventDefault();
+    handleSelectSuggestion(suggestions[highlightedIndex]);
+  } else if (e.key === 'Escape') {
+    e.preventDefault();
+    inputRef.current?.blur();
+  }
+};
+
+export const saveSearchKeyword = async (
+  keyword: string,
+  isGuest: boolean,
+  onAddSearch?: (keyword: string) => void,
+): Promise<void> => {
+  try {
+    if (isGuest) {
+      addGuestRecentSearch(keyword);
+      if (onAddSearch) {
+        onAddSearch(keyword);
+      }
+    } else {
+      await addRecentSearchHistory(keyword);
+    }
+  } catch (error) {
+    console.error('Error saving search keyword:', error);
   }
 };

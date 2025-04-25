@@ -3,14 +3,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { getProduct } from '@/actions/product-service';
-
 import RecentProductSkeleton from '@/components/modules/product/RecentProductSkeleton';
-import {
-  LOCAL_STORAGE_KEY,
-  RecentlyViewedItem,
-} from '@/lib/recently-viewed/utils';
 
 interface ProductData {
   productCode: number;
@@ -34,7 +28,6 @@ export default function ProductItemCardLocal({
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isDeleted, setIsDeleted] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchProductData = async () => {
@@ -60,25 +53,11 @@ export default function ProductItemCardLocal({
 
   const handleDelete = (e: React.MouseEvent) => {
     e.stopPropagation(); // 이벤트 버블링 방지
-    try {
-      const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
-      if (storedItems) {
-        const items = JSON.parse(storedItems) as RecentlyViewedItem[];
-        const updatedItems = items.filter(
-          (item) => item.productCode !== productCode,
-        );
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedItems));
 
-        setIsDeleted(true);
+    setIsDeleted(true);
 
-        if (onDelete) {
-          onDelete(productCode);
-        }
-
-        router.refresh();
-      }
-    } catch (error) {
-      console.error('상품 삭제 중 오류 발생:', error);
+    if (onDelete) {
+      onDelete(productCode);
     }
   };
 

@@ -1,52 +1,67 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   getRecentlyViewedProducts,
   groupItemsByDate,
-  LOCAL_STORAGE_KEY,
+  RecentlyViewedItem,
+  deleteRecentlyViewedProduct,
+  deleteAllRecentlyViewedProducts,
 } from '@/lib/recently-viewed/utils';
 import { DailyRecentlyViewedProductsType } from '@/types/products/productTypes';
 import RecentProductListLocal from '@/components/pages/product/RecentProductListLocal';
 
-export default function RecentlyViewedLocalPage() {
+export default function ClientRecentlyViewedWrapper() {
   const [recentProducts, setRecentProducts] = useState<
     DailyRecentlyViewedProductsType[]
   >([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const router = useRouter();
 
-  // 데이터 로드 함수
-  const loadData = () => {
+  const loadData = useCallback((): void => {
     setIsLoading(true);
     try {
-      const localItems = getRecentlyViewedProducts();
-      const groupedByDate = groupItemsByDate(localItems);
+      const localItems: RecentlyViewedItem[] = getRecentlyViewedProducts();
+      const groupedByDate: DailyRecentlyViewedProductsType[] =
+        groupItemsByDate(localItems);
       setRecentProducts(groupedByDate);
     } catch (error) {
       console.error('최근 본 상품 데이터 로딩 실패:', error);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     loadData();
+  }, [loadData]);
+
+  const handleLocalStorageDeleteAll = useCallback((): void => {
+    if (confirm('최근 본 상품을 모두 삭제하시겠습니까?')) {
+      deleteAllRecentlyViewedProducts();
+      setRecentProducts([]);
+      setTimeout(() => {
+        router.refresh();
+      }, 0);
+    }
+  }, [router]);
+
+  const handleDeleteProduct = useCallback((productCode: number): void => {
+    deleteRecentlyViewedProduct(productCode);
+
+    setRecentProducts((prevProducts) =>
+      prevProducts
+        .map((group) => ({
+          ...group,
+          recentlyViewProducts: group.recentlyViewProducts.filter(
+            (product) => product.productCode !== productCode,
+          ),
+        }))
+        .filter((group) => group.recentlyViewProducts.length > 0),
+    );
   }, []);
 
-  // 비회원 상태에서 전체 삭제 처리
-  const handleLocalStorageDeleteAll = () => {
-    if (confirm('최근 본 상품을 모두 삭제하시겠습니까?')) {
-      localStorage.removeItem(LOCAL_STORAGE_KEY);
-      // 즉시 상태 업데이트로 UI 반영
-      setRecentProducts([]);
-      // 백그라운드에서 페이지 리프레시
-      router.refresh();
-    }
-  };
-
-  // 로딩 중 표시
   if (isLoading) {
     return (
       <div className='flex justify-center items-center h-60'>로딩 중...</div>
@@ -65,7 +80,10 @@ export default function RecentlyViewedLocalPage() {
               전체 삭제
             </button>
           </div>
-          <RecentProductListLocal recentProducts={recentProducts} />
+          <RecentProductListLocal
+            recentProducts={recentProducts}
+            onDeleteProduct={handleDeleteProduct}
+          />
         </>
       ) : (
         <div className='flex flex-col items-center justify-center h-60 mt-50 mb-50'>

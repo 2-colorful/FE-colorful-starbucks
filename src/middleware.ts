@@ -45,42 +45,6 @@ export default async function middleware(request: NextRequest) {
   const isWithAuth = withAuthList.includes(pathname);
   const isWithOutAuth = withOutAuthList.includes(pathname);
 
-  if (pathname === '/search') {
-    if (!accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/guest-search';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
-  if (pathname === '/guest-search') {
-    if (accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/search';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
-  if (pathname === '/recently-viewed') {
-    if (!accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/recently-viewed-local';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
-  if (pathname === '/recently-viewed-local') {
-    if (accessToken) {
-      const url = request.nextUrl.clone();
-      url.pathname = '/recently-viewed';
-      return NextResponse.redirect(url);
-    }
-    return NextResponse.next();
-  }
-
   if (isWithAuth) return withAuth(request, !!accessToken);
   else if (isWithOutAuth)
     return withOutAuth(request, !!accessToken, callbackUrl);
