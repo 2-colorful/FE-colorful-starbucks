@@ -1,7 +1,7 @@
 'use client';
+import { useEffect, useRef } from 'react';
 
 import Loader from '@/components/ui/common/Loader';
-import { useEffect, useRef } from 'react';
 
 interface BottomScrollLoaderProps {
   hasMore: boolean;

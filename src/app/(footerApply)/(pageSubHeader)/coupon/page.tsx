@@ -1,9 +1,9 @@
 'use client';
+import { useState } from 'react';
 
 import CouponPossessionPanel from '@/components/pages/coupon/CouponPossessionPanel';
 import CouponReceivePanel from '@/components/pages/coupon/CouponReceivePanel';
 import CouponTabs from '@/components/pages/coupon/CouponTabs';
-import { useState } from 'react';
 
 export default function CouponPage() {
   const [activeTab, setActiveTab] = useState<'possession' | 'receive'>(

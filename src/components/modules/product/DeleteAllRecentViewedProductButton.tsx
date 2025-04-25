@@ -1,7 +1,7 @@
 'use client';
-
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
 import { deleteAllRecentProducts } from '@/actions/product-service';
 
 export default function DeleteAllRecentViewedProductButton() {

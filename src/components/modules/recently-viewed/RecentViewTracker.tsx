@@ -1,6 +1,6 @@
 'use client';
-
 import { useEffect, useContext } from 'react';
+
 import { fetchRecentlyViewedItem } from '@/actions/product-service';
 import { SessionContext } from '@/context/SessionContext';
 import { storeRecentlyViewedProduct } from '@/lib/recently-viewed/utils';

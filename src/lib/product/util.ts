@@ -51,15 +51,12 @@ export const buildQueryParams = (
     );
   }
 
-  // 가격 범위 필터
   if (params.minPrice) queryParams.append('minPrice', params.minPrice);
   if (params.maxPrice) queryParams.append('maxPrice', params.maxPrice);
 
-  // 정렬 옵션
   queryParams.append('sortBy', '');
   if (params.sortBy) queryParams.set('sortBy', params.sortBy);
 
-  // 페이지네이션 파라미터 (page 또는 cursor)
   if (page !== undefined) {
     queryParams.append('page', page.toString());
   }

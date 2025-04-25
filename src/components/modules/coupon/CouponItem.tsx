@@ -1,8 +1,8 @@
 'use client';
-
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowDownToLine, Check, ShoppingBag } from 'lucide-react';
+
 import { formatDate } from '@/lib/utils';
 import { priceFormatter } from '@/lib/priceFormatter';
 

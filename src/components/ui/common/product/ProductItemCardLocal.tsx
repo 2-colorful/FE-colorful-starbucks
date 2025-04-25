@@ -1,8 +1,8 @@
 'use client';
-
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+
 import { getProduct } from '@/actions/product-service';
 import RecentProductSkeleton from '@/components/modules/product/RecentProductSkeleton';
 

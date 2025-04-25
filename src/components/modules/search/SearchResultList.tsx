@@ -1,9 +1,9 @@
 'use client';
+
 import type { PaginatedResponseType } from '@/types/products/productTypes';
 import Loader from '@/components/ui/common/Loader';
 import BottomScrollLoader from '@/components/pages/product/BottomScrollLoader';
 import { useSearchInfiniteScroll } from '@/hooks/useSearchInfiniteScroll';
-
 import { SearchParamsType } from '@/types/search/requestDataTypes';
 import SearchResultItemSection from '@/components/layouts/search/SearchResultItemSection';
 

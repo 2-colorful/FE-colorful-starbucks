@@ -1,6 +1,7 @@
 'use client';
 import type React from 'react';
 import { Search, X } from 'lucide-react';
+
 import AutoCompleteList from '@/components/ui/search/AutoCompleteList';
 import Prev from '@/components/layouts/Header/Prev';
 import { useSearch } from '@/hooks/useSearch';

@@ -1,6 +1,7 @@
 'use client';
 import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+
 import { checkAndMigrateLocalStorage } from '@/lib/recently-viewed/utils';
 import { migrateGuestSearchesToDB } from '@/lib/search/util';
 

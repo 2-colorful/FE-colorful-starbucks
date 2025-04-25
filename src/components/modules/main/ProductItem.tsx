@@ -1,8 +1,9 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
+
 import Tag from '../../ui/main/Tag';
 import { SimpleProduct } from '@/types/products/productTypes';
-import Link from 'next/link';
 
 export default function ProductItem({
   productCode,

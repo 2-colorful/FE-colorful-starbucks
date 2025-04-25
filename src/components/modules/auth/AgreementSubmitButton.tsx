@@ -1,6 +1,7 @@
-import { Button } from '@/components/ui/common';
 import { cn } from '@/lib/utils';
 import React from 'react';
+
+import { Button } from '@/components/ui/common';
 
 export default function AgreementSubmitButton({
   isActive,

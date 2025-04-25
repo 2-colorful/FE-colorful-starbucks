@@ -1,10 +1,11 @@
 'use client';
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+
 import { getProductSimple } from '@/actions/product-service';
 import Tag from '@/components/ui/main/Tag';
 import { SimpleProduct } from '@/types/products/productTypes';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
 import RankingBadge from './RankingBadge';
 
 export default function BestItemCard({
