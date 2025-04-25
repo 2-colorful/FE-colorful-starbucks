@@ -126,3 +126,34 @@ export function groupItemsByDate(
     (a, b) => new Date(b.viewedAt).getTime() - new Date(a.viewedAt).getTime(),
   );
 }
+
+export const deleteRecentlyViewedProduct = (
+  productCode: number,
+): RecentlyViewedItem[] => {
+  try {
+    if (typeof window === 'undefined') return [];
+
+    const storedItems = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (!storedItems) return [];
+
+    const items = JSON.parse(storedItems) as RecentlyViewedItem[];
+    const updatedItems = items.filter(
+      (item) => item.productCode !== productCode,
+    );
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updatedItems));
+    return updatedItems;
+  } catch (error) {
+    console.error(`상품 ${productCode} 삭제 중 오류 발생:`, error);
+    return [];
+  }
+};
+
+export const deleteAllRecentlyViewedProducts = (): void => {
+  try {
+    if (typeof window === 'undefined') return;
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  } catch (error) {
+    console.error('모든 최근 본 상품 삭제 중 오류 발생:', error);
+  }
+};
