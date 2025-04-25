@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-import { SelectedOption } from '@/types/products/productPurchaseTypes';
+import { SelectedOptionType } from '@/types/products/productPurchaseTypes';
 import { Modal, useModal } from '../common/Modal/LegacyModal';
 import { ProductOptionsProvider } from '@/context/ProductOptionsContext';
 import PurchaseForm from '@/components/modules/product/PurchaseForm';
@@ -20,14 +20,12 @@ export default function PurchaseModal({
 }: PurchaseModalProps) {
   const { closeModal } = useModal();
 
-  const handleAddToCart = async (options: SelectedOption[]) => {
+  const handleAddToCart = async (options: SelectedOptionType[]) => {
     try {
-      // 옵션이 있는 경우 각 옵션별로 처리
       for (const option of options) {
         const sizeId = option.options['size']?.id;
         const colorId = option.options['color']?.id;
 
-        // 재고 확인 API 호출
         const queryParams = [];
         if (sizeId) queryParams.push(`sizeId=${sizeId}`);
         if (colorId) queryParams.push(`colorId=${colorId}`);
@@ -58,16 +56,14 @@ export default function PurchaseModal({
     }
   };
 
-  const handlePurchase = async (options: SelectedOption[]) => {
+  const handlePurchase = async (options: SelectedOptionType[]) => {
     try {
-      // 옵션이 있는 경우 각 옵션별로 처리
       const purchaseItems = [];
 
       for (const option of options) {
         const sizeId = option.options['size']?.id;
         const colorId = option.options['color']?.id;
 
-        // 재고 확인 API 호출
         const queryParams = [];
         if (sizeId) queryParams.push(`sizeId=${sizeId}`);
         if (colorId) queryParams.push(`colorId=${colorId}`);
@@ -90,8 +86,6 @@ export default function PurchaseModal({
         }
       }
 
-      console.log(`상품 ${productId} 즉시구매:`, purchaseItems);
-      // 여기에 구매 페이지로 이동하는 로직 추가
       closeModal();
     } catch (error) {
       console.error('구매 처리 중 오류 발생:', error);
@@ -99,7 +93,6 @@ export default function PurchaseModal({
     }
   };
 
-  // 옵션 데이터의 불필요한 참조 끊기
   const formattedOptions = {
     size: productOptions.size ? [...productOptions.size] : [],
     color: productOptions.color ? [...productOptions.color] : [],

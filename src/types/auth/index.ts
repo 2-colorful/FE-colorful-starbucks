@@ -1,4 +1,4 @@
-export type SignUpRequestData = {
+export type SignUpRequestDataType = {
   memberName: string;
   email: string;
   password: string;

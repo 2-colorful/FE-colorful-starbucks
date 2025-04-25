@@ -19,14 +19,14 @@ export interface ProductListDataType {
   nextCursor: string | null;
 }
 
-export type RecentlyViewedProductItem = {
+export type RecentlyViewedProductItemType = {
   productCode: number;
   productThumbnailUrl?: string;
 };
 
 export type DailyRecentlyViewedProductsType = {
   viewedAt: string;
-  recentlyViewProducts: RecentlyViewedProductItem[];
+  recentlyViewProducts: RecentlyViewedProductItemType[];
 };
 
 export type ProductDetailResponseType = {
@@ -50,7 +50,7 @@ export type PaginatedResponseType = {
   nextCursor: number;
 };
 
-export type SimpleProduct = {
+export type SimpleProductType = {
   productName: string;
   productCode: number;
   productThumbnailUrl: string;

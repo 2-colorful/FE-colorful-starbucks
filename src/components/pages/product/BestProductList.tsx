@@ -1,6 +1,7 @@
+import React from 'react';
+
 import BestItemCard from '@/components/modules/product/BestItemCard';
 import { BestProductType } from '@/types/products/bestProductTypes';
-import React from 'react';
 
 export default function BestProductList({
   products,

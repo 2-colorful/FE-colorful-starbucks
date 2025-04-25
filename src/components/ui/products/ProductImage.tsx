@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-interface ProductImageProps {
+interface ProductImagePropsType {
   imageUrl: string;
   name: string;
   className?: string;
@@ -16,7 +16,7 @@ export default function ProductImage({
   containerClassName = '',
   objectFit = 'cover',
   priority = false,
-}: ProductImageProps) {
+}: ProductImagePropsType) {
   return (
     <div className={`w-full pb-[100%] relative ${containerClassName}`}>
       <Image

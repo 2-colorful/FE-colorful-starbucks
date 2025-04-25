@@ -1,6 +1,6 @@
 'use client';
-
 import { useState, useEffect } from 'react';
+
 import { SubTitle, Body } from '@/components/ui/common';
 import RecentSearchItem from '@/components/ui/search/RecentSearchItem';
 import SearchSection from '@/components/ui/search/SearchSection';

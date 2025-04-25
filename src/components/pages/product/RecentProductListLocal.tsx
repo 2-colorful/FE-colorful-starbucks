@@ -1,6 +1,6 @@
 'use client';
-
 import React, { useState, useEffect } from 'react';
+
 import { DailyRecentlyViewedProductsType } from '@/types/products/productTypes';
 import { formatDate } from '@/lib/utils';
 import ProductItemCardLocal from '@/components/ui/common/product/ProductItemCardLocal';

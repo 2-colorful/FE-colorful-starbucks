@@ -5,14 +5,14 @@ import 'swiper/css';
 import ProductItem from '../../modules/main/ProductItem';
 import SectionHeader from '../../modules/main/SectionHeader';
 import { EventProductsType, EventResponseType } from '@/actions/event-service';
-import { SimpleProduct } from '@/types/products/productTypes';
+import { SimpleProductType } from '@/types/products/productTypes';
 
 export default function ProductList({
   event,
   products,
 }: {
   event: EventResponseType;
-  products: (EventProductsType & { details: SimpleProduct })[];
+  products: (EventProductsType & { details: SimpleProductType })[];
 }) {
   return (
     <section className='mx-auto p-4 mb-[50px]'>

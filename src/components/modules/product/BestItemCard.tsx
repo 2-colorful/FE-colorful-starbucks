@@ -1,10 +1,11 @@
 'use client';
-import { getProductSimple } from '@/actions/product-service';
-import Tag from '@/components/ui/main/Tag';
-import { SimpleProduct } from '@/types/products/productTypes';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react';
+
+import { getProductSimple } from '@/actions/product-service';
+import Tag from '@/components/ui/main/Tag';
+import { SimpleProductType } from '@/types/products/productTypes';
 import RankingBadge from './RankingBadge';
 
 export default function BestItemCard({
@@ -14,7 +15,7 @@ export default function BestItemCard({
   productCode: number;
   ranking: number;
 }) {
-  const [product, setProduct] = useState<SimpleProduct | null>(null);
+  const [product, setProduct] = useState<SimpleProductType | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 

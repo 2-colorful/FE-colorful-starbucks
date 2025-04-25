@@ -1,15 +1,16 @@
 'use client';
 import Image from 'next/image';
-import Tag from '../../ui/main/Tag';
-import { SimpleProduct } from '@/types/products/productTypes';
 import Link from 'next/link';
+
+import Tag from '../../ui/main/Tag';
+import { SimpleProductType } from '@/types/products/productTypes';
 
 export default function ProductItem({
   productCode,
   productDetails,
 }: {
   productCode: number;
-  productDetails: SimpleProduct;
+  productDetails: SimpleProductType;
 }) {
   return (
     <div className='w-full'>

@@ -11,7 +11,6 @@ export default function CouponReceivePanel({
 }: CouponReceivePanelProps) {
   if (!isActive) return null;
 
-  // 실제로는 API에서 가져온 쿠폰 데이터를 사용
   const coupons = [
     {
       id: 'coupon1',

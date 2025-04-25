@@ -1,5 +1,4 @@
 'use server';
-
 import { z } from 'zod';
 import { getServerSession } from 'next-auth';
 import { cookies } from 'next/headers';
@@ -7,7 +6,7 @@ import { cookies } from 'next/headers';
 import { signInDataType } from '@/types/responseDataTypes';
 import { instance } from '../instance';
 import { ApiResponse } from '@/types/common';
-import { SignUpRequestData } from '@/types/auth';
+import { SignUpRequestDataType } from '@/types/auth';
 import { options } from '@/app/api/auth/[...nextauth]/options';
 
 export const signInRequest = async (credentials: {
@@ -113,7 +112,7 @@ export async function verifyCode(
   }
 }
 
-export async function signUp(data: SignUpRequestData) {
+export async function signUp(data: SignUpRequestDataType) {
   try {
     const response = await instance.post<ApiResponse<string>>('/auth/sign-up', {
       body: JSON.stringify(data),

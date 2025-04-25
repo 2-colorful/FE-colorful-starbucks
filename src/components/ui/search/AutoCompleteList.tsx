@@ -41,15 +41,17 @@ export default function AutoCompleteList({
             aria-selected={index === highlightedIndex}
             className={`flex items-center px-4 py-3 cursor-pointer transition-colors duration-150 ${
               index === highlightedIndex
-                ? 'bg-[#f8f8f8] text-[#006241]'
-                : 'hover:bg-[#f8f8f8] text-gray-700 hover:text-[#006241]'
+                ? 'bg-gray-200 text-primary-200'
+                : 'hover:bg-gray-200 text-gray-700 hover:text-primary-200'
             }`}
             onClick={() => handleSelect(suggestion)}
             title={suggestion}
           >
             <SearchIcon
               className={`w-4 h-4 mr-3 flex-shrink-0 ${
-                index === highlightedIndex ? 'text-[#006241]' : 'text-gray-400'
+                index === highlightedIndex
+                  ? 'text-text-primary-200'
+                  : 'text-gray-400'
               }`}
             />
             <span className='text-sm font-medium truncate max-w-full'>

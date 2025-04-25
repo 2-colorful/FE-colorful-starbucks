@@ -1,8 +1,8 @@
 'use client';
-
-import { useRouter, useSearchParams } from 'next/navigation';
-import { CategoryCountType } from '@/types/search/requestDataTypes';
 import { useEffect, useRef } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+
+import { CategoryCountType } from '@/types/search/requestDataTypes';
 import ProductPriceFilterRow from '../product/ProductPriceFilterRow';
 import { priceOptions } from '@/data/category/categoryData';
 

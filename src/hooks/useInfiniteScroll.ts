@@ -30,7 +30,6 @@ export function useInfiniteScroll({
   const isMountedRef = useRef(true);
   const isLoadingRef = useRef(false);
 
-  // 컴포넌트 언마운트 시 isMountedRef 상태 업데이트
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
@@ -38,7 +37,6 @@ export function useInfiniteScroll({
     };
   }, []);
 
-  // 초기 상품 데이터 로드
   const loadInitialProducts = useCallback(async () => {
     if (!isMountedRef.current || isLoadingRef.current) return;
 
@@ -73,7 +71,6 @@ export function useInfiniteScroll({
     }
   }, [params]);
 
-  // 초기 데이터 설정 및 업데이트
   useEffect(() => {
     if (!initialData?.content || initialData.content.length === 0) {
       loadInitialProducts();
@@ -86,7 +83,6 @@ export function useInfiniteScroll({
     setCurrentPage(Number(params.page) || 1);
   }, [initialData, params.page, loadInitialProducts]);
 
-  // 이전 페이지 로드 함수 (상단 스크롤)
   const loadPreviousPage = useCallback(async () => {
     if (isLoadingRef.current || currentPage <= 1 || !isMountedRef.current)
       return;
@@ -112,7 +108,6 @@ export function useInfiniteScroll({
     }
   }, [currentPage, params]);
 
-  // 다음 페이지 로드 함수 (하단 스크롤)
   const loadNextPage = useCallback(async () => {
     if (isLoadingRef.current || !hasMore || !isMountedRef.current) return;
 
@@ -127,7 +122,6 @@ export function useInfiniteScroll({
           setProducts((prev) => [...prev, nextData]);
           setHasMore(nextData.hasNext || false);
 
-          // 안전하게 커서 업데이트
           if (nextData.nextCursor !== undefined) {
             setCurrentCursor(nextData.nextCursor);
           }
@@ -150,7 +144,6 @@ export function useInfiniteScroll({
     }
   }, [currentCursor, hasMore, params]);
 
-  // 상단 스크롤 감지 이벤트 리스너
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY === 0 && currentPage > 1 && !isLoadingRef.current) {

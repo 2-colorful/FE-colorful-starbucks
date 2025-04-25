@@ -1,29 +1,19 @@
 'use client';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useCallback } from 'react';
 import { throttle } from 'lodash';
 import { usePathname } from 'next/navigation';
 
 import ScrollToTop from '@/assets/icons/common/scrollToTop.svg';
-
-const THROTTLE_WAIT = 300;
+import {
+  SCROLL_CONSTANTS,
+  SCROLL_TO_TOP_HIDDEN_PATHS,
+} from '@/data/common/commonData';
 
 export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
   const pathname = usePathname();
 
-  const hiddenPathList = [
-    '/cart',
-    '/payment',
-    '/my-page',
-    '/orders',
-    '/coupon',
-    '/address',
-    '/search',
-    '/sign',
-    '/pay',
-  ];
-
-  const shouldHideButton = hiddenPathList.some(
+  const shouldHideButton = SCROLL_TO_TOP_HIDDEN_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}`),
   );
 
@@ -33,19 +23,36 @@ export default function ScrollToTopButton() {
         const scrollContainer = document.querySelector('.overflow-y-scroll');
         if (!scrollContainer) return;
 
-        setIsVisible(scrollContainer.scrollTop > 100);
-      }, THROTTLE_WAIT),
+        setIsVisible(
+          scrollContainer.scrollTop > SCROLL_CONSTANTS.SCROLL_THRESHOLD,
+        );
+      }, SCROLL_CONSTANTS.THROTTLE_WAIT),
     [],
   );
 
-  useEffect(() => {
+  const scrollToTop = useCallback(() => {
+    const scrollContainer = document.querySelector('.overflow-y-scroll');
+    if (!scrollContainer) return;
+
+    const scrollStep =
+      -scrollContainer.scrollTop / SCROLL_CONSTANTS.ANIMATION_STEPS;
+    const scrollInterval = setInterval(() => {
+      if (scrollContainer.scrollTop > 0) {
+        scrollContainer.scrollBy(0, scrollStep);
+      } else {
+        clearInterval(scrollInterval);
+      }
+    }, SCROLL_CONSTANTS.ANIMATION_INTERVAL);
+  }, []);
+
+  const effectCallback = useCallback(() => {
     if (shouldHideButton) {
       setIsVisible(false);
-      return;
+      return () => {};
     }
 
     const scrollContainer = document.querySelector('.overflow-y-scroll');
-    if (!scrollContainer) return;
+    if (!scrollContainer) return () => {};
 
     handleScroll();
 
@@ -55,39 +62,32 @@ export default function ScrollToTopButton() {
       scrollContainer.removeEventListener('scroll', handleScroll);
       handleScroll.cancel();
     };
-  }, [handleScroll, shouldHideButton, pathname]);
+  }, [handleScroll, shouldHideButton]);
 
-  const scrollToTop = () => {
-    const scrollContainer = document.querySelector('.overflow-y-scroll');
-    if (!scrollContainer) return;
-
-    const scrollStep = -scrollContainer.scrollTop / 20;
-    const scrollInterval = setInterval(() => {
-      if (scrollContainer.scrollTop > 0) {
-        scrollContainer.scrollBy(0, scrollStep);
-      } else {
-        clearInterval(scrollInterval);
-      }
-    }, 15);
-  };
+  useEffect(effectCallback, [effectCallback]);
 
   if (!isVisible || shouldHideButton) return null;
 
   return (
-    <div className='z-30 sticky bottom-21 w-full pointer-events-none'>
+    <nav
+      aria-label='페이지 맨 위로 스크롤'
+      className='z-30 sticky bottom-21 w-full pointer-events-none'
+    >
       <div className='max-w-3xl mx-auto relative'>
         <button
           onClick={scrollToTop}
+          type='button'
           className='absolute bottom-15 right-5 p-3.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto'
-          aria-label='최상단 이동'
+          aria-label='페이지 최상단으로 이동'
         >
           <ScrollToTop
             width={18}
             height={18}
+            aria-hidden='true'
             className='text-text-900 cursor-pointer'
           />
         </button>
       </div>
-    </div>
+    </nav>
   );
 }

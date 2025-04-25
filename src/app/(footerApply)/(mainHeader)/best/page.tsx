@@ -4,7 +4,6 @@ import {
 } from '@/actions/best-product-service';
 import ProductCategoryTopTabBar from '@/components/layouts/product/ProductCategoryTopTabBar';
 import BestProductList from '@/components/pages/product/BestProductList';
-import React from 'react';
 
 type BestSearchParamsType = {
   topCategoryId: string;

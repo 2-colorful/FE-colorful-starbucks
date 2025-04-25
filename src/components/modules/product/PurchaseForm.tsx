@@ -4,12 +4,12 @@ import SelectedOptionList from './SelectedOptionList';
 import CartIcon from '@/assets/icons/product/cart.svg';
 import { Button } from '@/components/ui/common';
 import { useProductOptions } from '@/context/ProductOptionsContext';
-import { SelectedOption } from '@/types/products/productPurchaseTypes';
+import { SelectedOptionType } from '@/types/products/productPurchaseTypes';
 import OptionSelectionForm from './OptionSelectionForm';
 
 interface PurchaseFormProps {
-  onAddToCart: (options: SelectedOption[]) => void;
-  onPurchase: (options: SelectedOption[]) => void;
+  onAddToCart: (options: SelectedOptionType[]) => void;
+  onPurchase: (options: SelectedOptionType[]) => void;
 }
 
 export default function PurchaseForm({

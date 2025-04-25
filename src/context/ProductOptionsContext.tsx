@@ -2,16 +2,16 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 import {
-  SelectedOption,
-  SelectedOptionValue,
+  SelectedOptionType,
+  SelectedOptionValueType,
 } from '@/types/products/productPurchaseTypes';
 import { useCallback } from 'react';
 import { ProductOptionDataType } from '@/types/responseDataTypes';
 
 interface ProductOptionsContextType {
-  currentSelections: SelectedOptionValue;
+  currentSelections: SelectedOptionValueType;
   quantity: number;
-  selectedOptions: SelectedOption[];
+  selectedOptions: SelectedOptionType[];
   productPrice: number;
   productOptions: ProductOptionDataType;
 
@@ -55,11 +55,13 @@ export function ProductOptionsProvider({
 }: ProductOptionsProviderProps) {
   // 현재 선택 중인 옵션 값들
   const [currentSelections, setCurrentSelections] =
-    useState<SelectedOptionValue>({});
+    useState<SelectedOptionValueType>({});
   const [quantity, setQuantity] = useState(1);
 
   // 확정된 옵션 목록
-  const [selectedOptions, setSelectedOptions] = useState<SelectedOption[]>([]);
+  const [selectedOptions, setSelectedOptions] = useState<SelectedOptionType[]>(
+    [],
+  );
 
   // 옵션이 있는지 확인 (사이즈나 컬러 옵션이 하나라도 있으면 true)
   const hasOptions =
@@ -109,7 +111,7 @@ export function ProductOptionsProvider({
   };
 
   // 옵션 값에 해당하는 기존 옵션 찾기
-  const findExistingOption = (optionValues: SelectedOptionValue) => {
+  const findExistingOption = (optionValues: SelectedOptionValueType) => {
     if (!isOptionComplete()) return null;
 
     // 동일한 옵션 조합 찾기
@@ -131,7 +133,7 @@ export function ProductOptionsProvider({
   };
 
   // 현재 선택된 옵션으로 고유 ID 생성
-  const generateOptionId = (optionValues: SelectedOptionValue) => {
+  const generateOptionId = (optionValues: SelectedOptionValueType) => {
     const sizeId = optionValues['size']?.id || 'none';
     const colorId = optionValues['color']?.id || 'none';
     return `size-${sizeId}_color-${colorId}`;
@@ -153,7 +155,7 @@ export function ProductOptionsProvider({
       setSelectedOptions(updatedOptions);
     } else {
       // 새 옵션 추가
-      const newOption: SelectedOption = {
+      const newOption: SelectedOptionType = {
         id: optionId,
         options: { ...currentSelections },
         quantity,

@@ -2,9 +2,9 @@ import React from 'react';
 import { XIcon } from 'lucide-react';
 
 import QuantityControl from './QuantityControl';
-import { SelectedOption } from '@/types/products/productPurchaseTypes';
+import { SelectedOptionType } from '@/types/products/productPurchaseTypes';
 
-interface ExtendedSelectedOption extends SelectedOption {
+interface ExtendedSelectedOption extends SelectedOptionType {
   displayText: string;
 }
 

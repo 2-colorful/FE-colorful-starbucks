@@ -1,9 +1,12 @@
 'use client';
 import { useState } from 'react';
 
-import { ProductAccordionProps } from '@/types/products/productAccordionProps';
+import { ProductAccordionPropsType } from '@/types/products/productAccordionProps';
 
-export default function ProductAccordion({ title, content }: ProductAccordionProps) {
+export default function ProductAccordion({
+  title,
+  content,
+}: ProductAccordionPropsType) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
