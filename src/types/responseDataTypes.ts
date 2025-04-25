@@ -1,4 +1,3 @@
-/* DeliveryAddress */
 export interface DeliveryDataType {
   memberAddressId: string;
   addressNickname: string;
@@ -15,7 +14,6 @@ export interface signInDataType {
   refreshToken: string;
 }
 
-/* Carts */
 export interface CartDatasType {
   totalPages: number;
   totalElements: number;
