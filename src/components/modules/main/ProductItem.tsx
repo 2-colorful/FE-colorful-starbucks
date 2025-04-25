@@ -3,14 +3,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import Tag from '../../ui/main/Tag';
-import { SimpleProduct } from '@/types/products/productTypes';
+import { SimpleProductType } from '@/types/products/productTypes';
 
 export default function ProductItem({
   productCode,
   productDetails,
 }: {
   productCode: number;
-  productDetails: SimpleProduct;
+  productDetails: SimpleProductType;
 }) {
   return (
     <div className='w-full'>

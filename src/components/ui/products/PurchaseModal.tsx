@@ -1,7 +1,7 @@
 'use client';
 import React from 'react';
 
-import { SelectedOption } from '@/types/products/productPurchaseTypes';
+import { SelectedOptionType } from '@/types/products/productPurchaseTypes';
 import { Modal, useModal } from '../common/Modal/LegacyModal';
 import { ProductOptionsProvider } from '@/context/ProductOptionsContext';
 import PurchaseForm from '@/components/modules/product/PurchaseForm';
@@ -20,7 +20,7 @@ export default function PurchaseModal({
 }: PurchaseModalProps) {
   const { closeModal } = useModal();
 
-  const handleAddToCart = async (options: SelectedOption[]) => {
+  const handleAddToCart = async (options: SelectedOptionType[]) => {
     try {
       for (const option of options) {
         const sizeId = option.options['size']?.id;
@@ -56,7 +56,7 @@ export default function PurchaseModal({
     }
   };
 
-  const handlePurchase = async (options: SelectedOption[]) => {
+  const handlePurchase = async (options: SelectedOptionType[]) => {
     try {
       const purchaseItems = [];
 

@@ -1,12 +1,12 @@
 import Image from 'next/image';
 import React from 'react';
 
-import { ProductImageProps } from '@/types/products/productImageProps';
+import { ProductImagePropsType } from '@/types/products/productImageProps';
 
 export default function ProductDetailImage({
   imageUrl,
   name,
-}: ProductImageProps) {
+}: ProductImagePropsType) {
   return (
     <div className='aspect-square relative bg-gray-100'>
       {imageUrl && (

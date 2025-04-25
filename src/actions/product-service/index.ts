@@ -7,7 +7,7 @@ import type {
   PaginatedResponseType,
   ProductTypes,
   RecentlyProductUrlType,
-  SimpleProduct,
+  SimpleProductType,
 } from '@/types/products/productTypes';
 import { instance } from '../instance';
 import type {
@@ -145,9 +145,9 @@ export async function getProductCategories(
 
 export const getProductSimple = async (
   productCode: number,
-): Promise<SimpleProduct> => {
+): Promise<SimpleProductType> => {
   try {
-    const response = await instance.get<SimpleProduct>(
+    const response = await instance.get<SimpleProductType>(
       `/products/${productCode}/simple`,
       {
         requireAuth: false,

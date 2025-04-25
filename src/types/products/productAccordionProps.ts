@@ -1,4 +1,4 @@
-export interface ProductAccordionProps {
+export interface ProductAccordionPropsType {
   title: string;
   content: string;
 }

@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import Tag from '../../ui/main/Tag';
 import { getProductSimple } from '@/actions/product-service';
 import FilteredProductItemCardSkelton from './FilteredProductItemCardSkelton';
-import { SimpleProduct } from '@/types/products/productTypes';
+import { SimpleProductType } from '@/types/products/productTypes';
 
 interface FilteredProductCardProps {
   productCode: number;
@@ -15,7 +15,7 @@ interface FilteredProductCardProps {
 export default function FilteredProductItemCard({
   productCode,
 }: FilteredProductCardProps) {
-  const [product, setProduct] = useState<SimpleProduct | null>(null);
+  const [product, setProduct] = useState<SimpleProductType | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 

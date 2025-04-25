@@ -1,4 +1,4 @@
-export interface SelectedOptionValue {
+export interface SelectedOptionValueType {
   [key: string]:
     | {
         id: number;
@@ -7,9 +7,9 @@ export interface SelectedOptionValue {
     | undefined;
 }
 
-export interface SelectedOption {
+export interface SelectedOptionType {
   id: string;
-  options: SelectedOptionValue;
+  options: SelectedOptionValueType;
   quantity: number;
 }
 
