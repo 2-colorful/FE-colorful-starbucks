@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useRef, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -15,6 +17,7 @@ export function useSearch(
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
   const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
   const [isFocused, setIsFocused] = useState<boolean>(false);
+  const [isComposing, setIsComposing] = useState<boolean>(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
   const formRef = useRef<HTMLFormElement>(null);
@@ -22,14 +25,14 @@ export function useSearch(
 
   const debounce = useDebounce();
 
-  const fetchSuggestions = async (value: string): Promise<void> => {
+  const fetchSuggestions = useCallback(async (value: string): Promise<void> => {
     if (value.trim()) {
       try {
         const results = await getAutoCompleteResult(value);
         setSuggestions(results);
         setShowSuggestions(results.length > 0);
       } catch (error) {
-        console.error('Error fetching suggestions:', error);
+        console.error('자동완성 오류:', error);
         setSuggestions([]);
         setShowSuggestions(false);
       }
@@ -37,11 +40,11 @@ export function useSearch(
       setSuggestions([]);
       setShowSuggestions(false);
     }
-  };
+  }, []);
 
   const debouncedFetchSuggestions = useCallback(
-    (value: string) => debounce(() => fetchSuggestions(value), 300),
-    [debounce],
+    (value: string) => debounce(fetchSuggestions, 300)(value),
+    [fetchSuggestions, debounce],
   );
 
   const handleSubmitSearch = async (
@@ -67,6 +70,23 @@ export function useSearch(
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
+
+    if (!isComposing) {
+      setInputValue(value);
+      setHighlightedIndex(-1);
+      debouncedFetchSuggestions(value);
+    }
+  };
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>,
+  ) => {
+    setIsComposing(false);
+    const value = e.currentTarget.value;
     setInputValue(value);
     setHighlightedIndex(-1);
     debouncedFetchSuggestions(value);
@@ -156,5 +176,11 @@ export function useSearch(
     handleInputFocus,
     handleInputBlur,
     handleClearInput,
+    handleCompositionStart,
+    handleCompositionEnd,
+
+    setInputValue,
+    setSuggestions,
+    setShowSuggestions,
   };
 }
