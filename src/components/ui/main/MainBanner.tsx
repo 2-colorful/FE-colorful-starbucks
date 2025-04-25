@@ -23,16 +23,14 @@ function MainBanner({ events }: { events: EventResponseType[] }) {
       {events.map((event) => (
         <SwiperSlide key={event.eventUuid}>
           <Link href={`/events?eventId=${event.eventUuid}`} className='block'>
-            <div className='relative h-[400px] md:h-[450px] lg:h-[500px]'>
-              <Image
-                src={event.thumbnailUrl || '/placeholder.svg'}
-                alt={`Banner ${event.eventUuid}`}
-                fill
-                style={{ objectFit: 'cover' }}
-                priority
-              />
-              <div className='absolute inset-0 flex flex-col justify-center p-8 md:p-12 lg:p-16 z-10 pointer-events-none'></div>
-            </div>
+            <Image
+              src={event.thumbnailUrl || '/placeholder.svg'}
+              alt={`Banner ${event.eventUuid}`}
+              width={1125}
+              height={900}
+              className='w-full h-auto'
+              priority
+            />
           </Link>
         </SwiperSlide>
       ))}
