@@ -25,7 +25,7 @@ export default function ShoppingInfoSection() {
         <ShoppingInfoItem
           icon={<FileText className='w-6 h-6 text-gray-600' />}
           title='내정보 수정'
-          href='/my-page/edit-profile'
+          href='/edit-profile'
         />
 
         <ShoppingInfoItem
