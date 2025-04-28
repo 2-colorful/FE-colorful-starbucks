@@ -17,6 +17,10 @@ export default function ScrollToTopButton() {
     (path) => pathname === path || pathname.startsWith(`${path}`),
   );
 
+  const isProductsPage = pathname.includes('/products');
+
+  const navPosition = isProductsPage ? 'bottom-8' : 'bottom-35';
+
   const handleScroll = useMemo(
     () =>
       throttle(() => {
@@ -71,13 +75,13 @@ export default function ScrollToTopButton() {
   return (
     <nav
       aria-label='페이지 맨 위로 스크롤'
-      className='z-30 sticky bottom-21 w-full pointer-events-none'
+      className={`z-30 sticky ${navPosition} w-full pointer-events-none`}
     >
       <div className='max-w-3xl mx-auto relative'>
         <button
           onClick={scrollToTop}
           type='button'
-          className='absolute bottom-15 right-5 p-3.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto'
+          className={`absolute bottom-0 right-5 p-3.5 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 pointer-events-auto`}
           aria-label='페이지 최상단으로 이동'
         >
           <ScrollToTop
