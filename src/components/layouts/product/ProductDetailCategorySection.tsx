@@ -24,7 +24,7 @@ export default function ProductDetailCategorySection({
   const rawSearchParams = useSearchParams();
 
   useEffect(() => {
-    if (bottomCategory.length > 0 && topCategoryId !== '0') {
+    if (bottomCategory.length > 0 && topCategoryId !== '19') {
       setIsAll(true);
     } else {
       setIsAll(false);
@@ -42,12 +42,19 @@ export default function ProductDetailCategorySection({
     };
   }, [rawSearchParams]);
 
+  const sectionHeight = isAll
+    ? isExpanded
+      ? 'h-[100px]'
+      : 'h-[1px]'
+    : 'h-[52px]';
+
   return (
     <>
       <section
         className={cn(
-          isExpanded ? 'h-[100px]' : 'h-[1px]',
-          'w-full  transition-all duration-[1s] overflow-hidden bg-white',
+          sectionHeight,
+          'w-full transition-all duration-[1s] overflow-hidden bg-white',
+          topCategoryId === '19' ? 'mb-0' : 'mb-3',
         )}
       >
         {isAll && (
@@ -63,7 +70,7 @@ export default function ProductDetailCategorySection({
         <div className='w-full py-3 flex justify-center border-b border-stroke-100'>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className='flex items-center text-body3 text-[var(--color-text-700)]'
+            className='flex items-center text-body3 text-text-700'
             type='button'
           >
             {isExpanded ? '접기' : '펼치기'}

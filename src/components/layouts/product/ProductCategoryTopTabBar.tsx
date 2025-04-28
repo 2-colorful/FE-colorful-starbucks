@@ -14,7 +14,7 @@ export default function ProductCategoryTopTabBar({
 }: ProductCategoryTopTabBarProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const currentCategoryCode = searchParams.get('topCategoryId') || '0';
+  const currentCategoryCode = searchParams.get('topCategoryId') || '19';
 
   const activeTabRef = useRef<HTMLLIElement>(null);
 
@@ -35,7 +35,7 @@ export default function ProductCategoryTopTabBar({
   }, [currentCategoryCode]);
 
   return (
-    <ul className='flex  border-b boarder-stroke-100 overflow-x-auto scrollbar-hidden'>
+    <ul className='flex  border-b border-stroke-100 overflow-x-auto scrollbar-hidden'>
       {topCategory.map((category) => {
         const isActive = currentCategoryCode === String(category.topCategoryId);
         return (
