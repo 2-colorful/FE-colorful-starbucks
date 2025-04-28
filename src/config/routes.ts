@@ -5,3 +5,9 @@ export const routes = {
   mypage: '/my-page',
   address: '/address',
 };
+
+export const underDevelopment = {
+  order: '/orders',
+  wishList: 'wishlist',
+  editProfile: '/edit-profile',
+};
