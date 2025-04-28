@@ -8,6 +8,8 @@ export const SCROLL_TO_TOP_HIDDEN_PATHS = [
   '/search',
   '/sign',
   '/pay',
+  '/not-found',
+  '/under-development',
 ] as const;
 
 export const SCROLL_CONSTANTS = {

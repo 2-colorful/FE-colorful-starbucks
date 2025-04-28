@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { getToken } from 'next-auth/jwt';
-import { routes } from './config/routes';
+import { routes, underDevelopment } from './config/routes';
 
 const withAuth = async (req: NextRequest, token: boolean) => {
   const url = req.nextUrl.clone();
@@ -12,6 +12,8 @@ const withAuth = async (req: NextRequest, token: boolean) => {
 
     return NextResponse.redirect(url);
   }
+
+  return NextResponse.next();
 };
 
 const FALLBACK_URL = '/';
@@ -28,10 +30,19 @@ const withOutAuth = async (
 
     return NextResponse.redirect(url);
   }
+
+  return NextResponse.next();
 };
 
-const withAuthList = [routes.cart, routes.mypage, routes.cart, routes.address];
+const handleUnderDevelopment = (req: NextRequest) => {
+  const url = req.nextUrl.clone();
+  url.pathname = '/under-development';
+  return NextResponse.redirect(url);
+};
+
+const withAuthList = [routes.cart, routes.mypage, routes.address];
 const withOutAuthList = [routes.signIn];
+const underDevelopmentList = Object.values(underDevelopment);
 
 export default async function middleware(request: NextRequest) {
   const token = await getToken({
@@ -42,14 +53,22 @@ export default async function middleware(request: NextRequest) {
   const { searchParams } = request.nextUrl;
   const callbackUrl = searchParams.get('callbackUrl');
   const { pathname } = request.nextUrl;
+
+  const isUnderDevelopment = underDevelopmentList.includes(pathname);
+  if (isUnderDevelopment) return handleUnderDevelopment(request);
+
   const isWithAuth = withAuthList.includes(pathname);
   const isWithOutAuth = withOutAuthList.includes(pathname);
 
   if (isWithAuth) return withAuth(request, !!accessToken);
   else if (isWithOutAuth)
     return withOutAuth(request, !!accessToken, callbackUrl);
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|fonts|images).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|favicon.ico|fonts|images|under-development).*)',
+  ],
 };
