@@ -23,7 +23,7 @@ export default async function ProductsPage({
     filteredParams[key] = value;
   });
 
-  const topCategoryId = params.topCategoryId || '0';
+  const topCategoryId = params.topCategoryId || '19';
 
   const [topCategory, bottomCategory, initialData] = await Promise.all([
     getTopCategories(),
