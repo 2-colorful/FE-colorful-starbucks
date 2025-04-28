@@ -68,6 +68,7 @@ const fetchProducts = async (
       `/products?${queryParams.toString()}`,
       {
         requireAuth: false,
+        revalidate: 60 * 60,
       },
     );
 
@@ -136,8 +137,11 @@ export async function getProductCategories(
 ): Promise<ProductCategoryTopType[]> {
   const res = await instance.get<ProductCategoryTopType[]>(
     `/api/v1/categories/${topCategoryId}/subcategories`,
+    {
+      requireAuth: false,
+      revalidate: 60 * 60 * 24,
+    },
   );
-  console.log('res', res);
   const data = res.data;
 
   return data;
@@ -253,6 +257,7 @@ export const getProudctDetailData = async (
       `/product-details/${productDetailCode}`,
       {
         requireAuth: false,
+        revalidate: 60 * 60 * 24,
       },
     );
 
@@ -270,6 +275,7 @@ export const getProductOptionData = async (
       `/products/${productCode}/options`,
       {
         requireAuth: false,
+        revalidate: 60,
       },
     );
 
@@ -292,7 +298,10 @@ export const getProductDetailWithOptions = async (
     const res = await instance.get<{
       productDetailCode: number;
       inventoryQuantity: number;
-    }>(`/product-details?${params.toString()}`, { requireAuth: false });
+    }>(`/product-details?${params.toString()}`, {
+      requireAuth: false,
+      revalidate: 1,
+    });
     return res.data;
   } catch (error) {
     throw error;
