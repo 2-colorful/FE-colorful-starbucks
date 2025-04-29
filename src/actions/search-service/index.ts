@@ -153,6 +153,7 @@ export const getSearchResultsByPage = async (
       `/es/search?${apiParams}`,
       {
         requireAuth: false,
+        revalidate: 60 * 60,
       },
     );
 
@@ -226,6 +227,7 @@ export const getSearchCounts = async (params: {
       `/es/categories?${searchParams}`,
       {
         requireAuth: false,
+        revalidate: 60 * 60,
       },
     );
 

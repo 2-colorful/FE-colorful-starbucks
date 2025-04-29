@@ -49,6 +49,7 @@ export const getDetailEvent = async (
       `/events/${eventUuid}`,
       {
         requireAuth: false,
+        revalidate: 60 * 60 * 24,
       },
     );
     return response.data;
@@ -65,6 +66,7 @@ export const getEventProducts = async (
       `/events/${eventUuid}/products?size=50&page=0`,
       {
         requireAuth: false,
+        revalidate: 60 * 60 * 24,
       },
     );
     return response.data.content;
